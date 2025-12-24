@@ -28,7 +28,7 @@ int main(){
         // Opens counter.txt to read the last used UID
         file.open("counter.txt", ios::in);
         if(!file.is_open()) {
-            cout << "Error opening counter.txt\n";
+            cout << "Error in opening counter.txt\n";
             return 0;
         }
         string count;
@@ -47,7 +47,7 @@ int main(){
         // Step 2: Check for duplicate username
         file.open("data.csv", ios::in);
         if (!file.is_open()) {
-            cout << "Error opening data.csv\n";
+            cout << "Error in opening data.csv\n";
             return 0;
         }
 
@@ -80,7 +80,7 @@ int main(){
             user.UID++; // Increment UID
             file.open("data.csv", ios::out | ios::app);
             if (!file.is_open()) {
-                cout << "Error opening data.csv for writing\n";
+                cout << "Error in opening data.csv for writing\n";
                 return 0;
             }
             file << user.UID << ", " << user.username << ", " << user.password << "\n";
@@ -101,7 +101,51 @@ int main(){
 
     // --------==== Sign In ====--------
     else if (choice == 2){
-        cout << "--------==== Sign In ====--------";
+        cout << "--------==== Sign In ====--------" << endl;
+        cout << "Enter your username: ";
+        cin >> user.username;
+
+        cout << "Enter your password: ";
+        cin >> user.password;
+
+        // Checking if file contain user name
+        file.open("data.csv", ios::in);
+        if (!file.is_open()) {
+            cout << "Error in opening data.csv\n";
+            return 0;
+        }
+
+        string line;
+        bool exist = false;
+
+        getline(file, line); // Skip header
+        while (getline(file, line)) {
+            stringstream ss(line);
+            string uidStr, usernameStr, passwordStr;
+
+            getline(ss, uidStr, ',');
+            getline(ss, usernameStr, ',');
+            getline(ss, passwordStr, ',');
+
+            // Remove spaces
+            usernameStr.erase(0, usernameStr.find_first_not_of(" "));
+            usernameStr.erase(usernameStr.find_last_not_of(" ") + 1);
+
+            passwordStr.erase(0, passwordStr.find_first_not_of(" "));
+            passwordStr.erase(passwordStr.find_last_not_of(" ") + 1);
+
+            if (usernameStr == user.username && passwordStr == user.password) {
+                user.UID = stoi(uidStr);
+                exist = true;
+                break;
+            }
+        }
+        file.close();
+        if (exist) {
+            cout << "User Exist and its UID is: " << user.UID;
+        } else {
+            cout << "Incorrect Username or Password";
+        }
     }
     return 0;
 }
