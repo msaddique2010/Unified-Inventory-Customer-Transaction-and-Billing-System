@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -25,8 +26,11 @@ int main(){
     if (choice == 1){
 
         // Opens counter.txt to read the last used UID
-
         file.open("counter.txt", ios::in);
+        if(!file.is_open()) {
+            cout << "Error opening counter.txt\n";
+            return 0;
+        }
         string count;
         getline(file, count);   // Read the UID as string
         user.UID = stoi(count); // Convert UID string to int
@@ -34,33 +38,64 @@ int main(){
 
         cout << "--------==== Sign Up ====--------" << endl;
 
-        // Opens data.csv to add new user without over-writing previous text
-        file.open("data.csv", ios::out | ios::app);
+        cout << "Enter Username: "; // Gets username as input
+        cin >> user.username;
 
-        if (file.is_open()){ 
-            // Check if file opened successfully
-            cout << "Enter Username: "; // Gets username as input
-            cin >> user.username;
+        cout << "Enter password: "; // Gets Password as input
+        cin >> user.password;
 
-            cout << "Enter password: "; // Gets Password as input
-            cin >> user.password;
-
-            user.UID++; // Increment UID for new user
-
-            // Writes user information to CSV
-            file << user.UID << ", " << user.username << ", " << user.password << "\n";
-
-            file.close();
-
-            // Update counter.txt with new UID
-            file.open("counter.txt", ios::out);
-            file << user.UID;
-            file.close();
+        // Step 2: Check for duplicate username
+        file.open("data.csv", ios::in);
+        if (!file.is_open()) {
+            cout << "Error opening data.csv\n";
+            return 0;
         }
 
-        else{
-            cout << "Error in opening file for writing.." << endl;
-            return 0;
+        string line;
+        bool duplicate = false;
+
+        getline(file, line); // Skip header
+        while (getline(file, line)) {
+            stringstream ss(line);
+            string uidStr, usernameStr, passwordStr;
+
+            getline(ss, uidStr, ',');
+            getline(ss, usernameStr, ',');
+            
+            // Remove leading/trailing spaces
+            usernameStr.erase(0, usernameStr.find_first_not_of(" "));
+            usernameStr.erase(usernameStr.find_last_not_of(" ") + 1);
+
+            if (usernameStr == user.username) {
+                duplicate = true;
+                break;
+            }
+        }
+        file.close();
+
+        if (duplicate) {
+            cout << "Username already exists. Choose another username.\n";
+        } else {
+            // Step 3: Append new user
+            user.UID++; // Increment UID
+            file.open("data.csv", ios::out | ios::app);
+            if (!file.is_open()) {
+                cout << "Error opening data.csv for writing\n";
+                return 0;
+            }
+            file << user.UID << ", " << user.username << ", " << user.password << "\n";
+            file.close();
+
+            // Step 4: Update counter.txt
+            file.open("counter.txt", ios::out);
+            if (!file.is_open()) {
+                cout << "Error opening counter.txt for writing\n";
+                return 0;
+            }
+            file << user.UID;
+            file.close();
+
+            cout << "Sign up successful! Your UID is " << user.UID << endl;
         }
     }
 
