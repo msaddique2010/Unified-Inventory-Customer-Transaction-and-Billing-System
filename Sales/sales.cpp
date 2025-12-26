@@ -4,6 +4,7 @@
 #include <ctime>
 
 #include "../Products/products.h"
+#include "../Customers/customers.h"
 
 using namespace std;
 struct Sales{
@@ -17,6 +18,7 @@ struct Sales{
 
 int sales(){
     Products product;
+    Customers customer;
     fstream file;
 
     time_t now = time(nullptr);
@@ -37,6 +39,9 @@ int sales(){
         }
         else if(choice == 1){
             allProducts(product, file);
+        }
+        else if(choice == 2){
+            allCustomers(customer, file);
         }
         else {
             cout << "Invalid Input";
