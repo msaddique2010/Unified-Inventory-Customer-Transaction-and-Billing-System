@@ -6,7 +6,7 @@
 #include <sstream>
 
 using namespace std;
-
+bool isAuthentic = false;
 // Structure holds user data
 struct User{
     int UID;
@@ -14,7 +14,7 @@ struct User{
     string password;
 };
 
-int main(){
+int authentication(){
     fstream file; // File object for reading/writing files
     User user;    // User-defined datatype to store user input and info
 
@@ -26,7 +26,7 @@ int main(){
     if (choice == 1){
 
         // Opens counter.txt to read the last used UID
-        file.open("counter.txt", ios::in);
+        file.open("./Authentication/counter.txt", ios::in);
         if(!file.is_open()) {
             cout << "Error in opening counter.txt\n";
             return 0;
@@ -36,7 +36,7 @@ int main(){
         user.UID = stoi(count); // Convert UID string to int
         file.close();           // Close file
 
-        cout << "--------==== Sign Up ====--------" << endl;
+        cout << "\n--------==== Sign Up ====--------" << endl;
 
         cout << "Enter Username: "; // Gets username as input
         cin >> user.username;
@@ -45,7 +45,7 @@ int main(){
         cin >> user.password;
 
         // Step 2: Check for duplicate username
-        file.open("data.csv", ios::in);
+        file.open("./Authentication/data.csv", ios::in);
         if (!file.is_open()) {
             cout << "Error in opening data.csv\n";
             return 0;
@@ -78,7 +78,7 @@ int main(){
         } else {
             // Step 3: Append new user
             user.UID++; // Increment UID
-            file.open("data.csv", ios::out | ios::app);
+            file.open("./Authentication/data.csv", ios::out | ios::app);
             if (!file.is_open()) {
                 cout << "Error in opening data.csv for writing\n";
                 return 0;
@@ -87,7 +87,7 @@ int main(){
             file.close();
 
             // Step 4: Update counter.txt
-            file.open("counter.txt", ios::out);
+            file.open("./Authentication/counter.txt", ios::out);
             if (!file.is_open()) {
                 cout << "Error opening counter.txt for writing\n";
                 return 0;
@@ -96,12 +96,13 @@ int main(){
             file.close();
 
             cout << "Sign up successful! Your UID is " << user.UID << endl;
+            isAuthentic = true;
         }
     }
 
     // --------==== Sign In ====--------
     else if (choice == 2){
-        cout << "--------==== Sign In ====--------" << endl;
+        cout << "\n--------==== Sign In ====--------" << endl;
         cout << "Enter your username: ";
         cin >> user.username;
 
@@ -109,7 +110,7 @@ int main(){
         cin >> user.password;
 
         // Checking if file contain user name
-        file.open("data.csv", ios::in);
+        file.open("./Authentication/data.csv", ios::in);
         if (!file.is_open()) {
             cout << "Error in opening data.csv\n";
             return 0;
@@ -142,7 +143,8 @@ int main(){
         }
         file.close();
         if (exist) {
-            cout << "User Exist and its UID is: " << user.UID;
+            cout << "User Exist and its UID is: " << user.UID << endl;
+            isAuthentic = true;
         } else {
             cout << "Incorrect Username or Password";
         }
