@@ -10,13 +10,13 @@ using namespace std;
 int addCustomers(Customers &customer, fstream &file){
     // Opens counter.txt to read the last used UID
     file.open("Customers/counter.txt", ios::in);
-    if (!file.is_open()) {
-        cout << "Error in opening counter.txt\n";
-        return 0;
-    }
-    string count;
-    getline(file, count);     // Read the UID as string
-    customer.ID = stoi(count); // Convert UID string to int
+        if (!file.is_open()) {
+            cout << "Error in opening counter.txt\n";
+            return 0;
+        }
+        string count;
+        getline(file, count);     // Read the UID as string
+        customer.ID = stoi(count); // Convert UID string to int
     file.close();             // Close file
 
     cout << "--------==== Add Customer ====--------" << endl;
