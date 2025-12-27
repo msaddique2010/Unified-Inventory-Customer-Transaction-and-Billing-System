@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sstream>
 #include <ctime>
 
 #include "../Products/products.h"
@@ -233,7 +234,7 @@ int transactions()
                     if (exist)
                     {
                         cout << "Product Quatity is also available.." << endl;
-                        cout << "Completed...";
+                        cout << "Completed...💯";
                     }
                     else
                     {
