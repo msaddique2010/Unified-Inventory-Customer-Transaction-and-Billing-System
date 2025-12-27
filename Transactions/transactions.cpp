@@ -233,7 +233,7 @@ int transactions()
                     if (exist)
                     {
                         cout << "Product Quatity is also available.." << endl;
-                        cout << "Completed...💯";
+                        cout << "Completed...";
                     }
                     else
                     {
