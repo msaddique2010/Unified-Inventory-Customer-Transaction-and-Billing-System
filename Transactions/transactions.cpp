@@ -23,7 +23,7 @@ int transactions()
     Products product;
     Customers customer;
     Sales sale;
-    fstream file;
+    fstream file, temp;
 
     time_t now = time(nullptr);
     tm *ltm = localtime(&now);
@@ -182,59 +182,95 @@ int transactions()
                 {
                     cout << "Product Available..." << endl;
                     file.open("Products/Products.csv", ios::in);
-                    if (!file.is_open())
-                    {
-                        cout << "Error in opening products.csv\n";
-                        return 0;
-                    }
-
-                    string line;
-                    bool exist = false;
-
-                    getline(file, line); // Skip header
-                    while (getline(file, line))
-                    {
-                        stringstream ss(line);
-                        string idStr, nameStr, descriptionStr, priceStr, quantityStr;
-
-                        getline(ss, idStr, ',');
-                        getline(ss, nameStr, ',');
-                        getline(ss, descriptionStr, ',');
-                        getline(ss, priceStr, ',');
-                        getline(ss, quantityStr, ',');
-
-                        // Remove spaces
-                        idStr.erase(0, idStr.find_first_not_of(" "));
-                        idStr.erase(idStr.find_last_not_of(" ") + 1);
-                        product.ID = stoi(idStr);
-
-                        // nameStr.erase(0, nameStr.find_first_not_of(" "));
-                        // nameStr.erase(nameStr.find_last_not_of(" ") + 1);
-                        // product.name = nameStr;
-
-                        // descriptionStr.erase(0, descriptionStr.find_first_not_of(" "));
-                        // descriptionStr.erase(descriptionStr.find_last_not_of(" ") + 1);
-                        // product.description = descriptionStr;
-
-                        // priceStr.erase(0, priceStr.find_first_not_of(" "));
-                        // priceStr.erase(priceStr.find_last_not_of(" ") + 1);
-                        // product.price = stoi(priceStr);
-
-                        quantityStr.erase(0, quantityStr.find_first_not_of(" "));
-                        quantityStr.erase(quantityStr.find_last_not_of(" ") + 1);
-                        product.quantity = stoi(quantityStr);
-
-                        if (sale.Product_ID == product.ID && sale.Quantity == product.quantity)
+                        if (!file.is_open())
                         {
-                            exist = true;
-                            break;
+                            cout << "Error in opening products.csv\n";
+                            return 0;
                         }
-                    }
+
+                        string line;
+                        bool exist = false;
+
+                        getline(file, line); // Skip header
+                        while (getline(file, line))
+                        {
+                            stringstream ss(line);
+                            string idStr, nameStr, descriptionStr, priceStr, quantityStr;
+
+                            getline(ss, idStr, ',');
+                            getline(ss, nameStr, ',');
+                            getline(ss, descriptionStr, ',');
+                            getline(ss, priceStr, ',');
+                            getline(ss, quantityStr, ',');
+
+                            // Remove spaces
+                            idStr.erase(0, idStr.find_first_not_of(" "));
+                            idStr.erase(idStr.find_last_not_of(" ") + 1);
+                            product.ID = stoi(idStr);
+
+                            // nameStr.erase(0, nameStr.find_first_not_of(" "));
+                            // nameStr.erase(nameStr.find_last_not_of(" ") + 1);
+                            // product.name = nameStr;
+
+                            // descriptionStr.erase(0, descriptionStr.find_first_not_of(" "));
+                            // descriptionStr.erase(descriptionStr.find_last_not_of(" ") + 1);
+                            // product.description = descriptionStr;
+
+                            // priceStr.erase(0, priceStr.find_first_not_of(" "));
+                            // priceStr.erase(priceStr.find_last_not_of(" ") + 1);
+                            // product.price = stoi(priceStr);
+
+                            quantityStr.erase(0, quantityStr.find_first_not_of(" "));
+                            quantityStr.erase(quantityStr.find_last_not_of(" ") + 1);
+                            product.quantity = stoi(quantityStr);
+
+                            if (sale.Product_ID == product.ID && sale.Quantity <= product.quantity)
+                            {
+                                exist = true;
+                                break;
+                            }
+                        }
                     file.close();
                     if (exist)
                     {
                         cout << "Product Quatity is also available.." << endl;
-                        cout << "Completed...💯";
+                        string line;
+
+                        file.open("Products/Products.csv", ios::in);
+                        temp.open("Products/temp.csv", ios::out);
+
+                        // copy header
+                        getline(file, line);
+                        temp << line << endl;
+
+                        while (getline(file, line))
+                        {
+                            stringstream ss(line);
+                            string idStr, name, desc, priceStr, qtyStr;
+
+                            getline(ss, idStr, ',');
+                            getline(ss, name, ',');
+                            getline(ss, desc, ',');
+                            getline(ss, priceStr, ',');
+                            getline(ss, qtyStr, ',');
+
+                            int id = stoi(idStr);
+                            int qty = stoi(qtyStr);
+
+                            if (id == sale.Product_ID)
+                            {
+                                qty -= sale.Quantity;   // 🔥 SUBTRACT SOLD QUANTITY
+                            }
+
+                            temp << id << "," << name << "," << desc << ","
+                                << priceStr << "," << qty << endl;
+                        }
+
+                        file.close();
+                        temp.close();
+
+                        remove("Products/Products.csv");
+                        rename("Products/temp.csv", "Products/Products.csv");
                     }
                     else
                     {
