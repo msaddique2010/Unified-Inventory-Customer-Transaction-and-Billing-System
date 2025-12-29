@@ -256,10 +256,12 @@ int transactions()
 
                             int id = stoi(idStr);
                             int qty = stoi(qtyStr);
-
+                            int unitPrice = stoi(priceStr);
+                            
                             if (id == sale.Product_ID)
                             {
-                                qty -= sale.Quantity;   // 🔥 SUBTRACT SOLD QUANTITY
+                                sale.totalAmount = unitPrice * sale.Quantity;
+                                qty -= sale.Quantity;
                             }
 
                             temp << id << "," << name << "," << desc << ","
@@ -289,8 +291,9 @@ int transactions()
             else
             {
                 cout << "There is no customer with ID: " << customer.ID;
+                return 0;
             }
-            // Step 3: Append new user
+            // Step 3: Append
             sale.Transaction_ID++; // Increment UID
             file.open("Transactions/transactions.csv", ios::out | ios::app);
             if (!file.is_open())
@@ -298,7 +301,7 @@ int transactions()
                 cout << "Error in opening products.csv for writing\n";
                 return 0;
             }
-            file << sale.Transaction_ID << ", " << sale.Customer_ID << ", " << sale.Product_ID << ", " << sale.Quantity << "\n";
+            file << sale.Transaction_ID << ", " << sale.Customer_ID << ", " << sale.Product_ID << ", " << sale.Quantity << ", " << sale.totalAmount << ", " << dateTime << "\n";
             file.close();
 
             // Step 4: Update counter.txt
