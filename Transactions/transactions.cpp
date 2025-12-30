@@ -33,7 +33,9 @@ int transactions()
     while (true)
     {
         int choice;
-        cout << "See All Products.........Press 1: \n"
+        cout << "Transaction Details:\n"
+             << "\n--------==== Manage Transaction ====--------\n"
+             << "See All Products.........Press 1: \n"
              << "See All Customers........Press 2: \n"
              << "Make Transaction.........Press 3: \n"
              << "Exit.....................Press 0: ";
@@ -303,6 +305,16 @@ int transactions()
             }
             file << sale.Transaction_ID << ", " << sale.Customer_ID << ", " << sale.Product_ID << ", " << sale.Quantity << ", " << sale.totalAmount << ", " << dateTime << "\n";
             file.close();
+
+            cout << "\n\n================================\n"
+                 << "Transaction ID: " << sale.Transaction_ID << "\n"
+                 << "Customer ID: " << sale.Customer_ID << "\n"
+                 << "Product ID: " << sale.Product_ID << "\n"
+                 << "Product Quantity: " << sale.Quantity << "\n"
+                 << "Amount: " << sale.totalAmount << "\n"
+                 << "Added at: " << dateTime << "\n"
+                 << "================================" << endl;
+
 
             // Step 4: Update counter.txt
             file.open("Transactions/counter.txt", ios::out);

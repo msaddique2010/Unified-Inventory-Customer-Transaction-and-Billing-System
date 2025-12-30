@@ -3,6 +3,7 @@
 #include "./Products/products.cpp"
 #include "./Customers/customers.cpp"
 #include "./Transactions/transactions.cpp"
+#include "./Billing/billing.cpp"
 
 using namespace std;
 int main(){
@@ -15,6 +16,7 @@ int main(){
                  << "Products..............Press 1: \n" 
                  << "Customers.............Press 2: \n"
                  << "Manage Transactions...Press 3: \n"
+                 << "Billing...............Press 4: \n"
                  << "Exit..................Press 0: ";
             cin >> choice;
             if (choice == 0){
@@ -29,6 +31,9 @@ int main(){
             }
             else if (choice == 3){
                 transactions();
+            }
+            else if (choice == 4){
+                billing();
             }
             else{
                 cout << "Invalid Input..";
