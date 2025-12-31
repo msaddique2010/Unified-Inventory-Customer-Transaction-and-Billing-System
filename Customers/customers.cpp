@@ -125,7 +125,7 @@ int updateCustomers(Customers &customer, fstream &file, fstream &temp){
 
     if (found){
         remove("Customers/customers.csv");
-        rename("Customers/temp.csv", "customers.csv");
+        rename("Customers/temp.csv", "Customers/customers.csv");
         cout << "Customers updated successfully.\n";
     }
     else{

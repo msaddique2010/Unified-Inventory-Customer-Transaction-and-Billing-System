@@ -41,7 +41,7 @@ int main(){
         }
     } 
     else {
-        
+        cout << "Invalid Input";
     }
     return 0;
 }
