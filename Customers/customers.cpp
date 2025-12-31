@@ -311,11 +311,11 @@ int customers(){
     do {
         cout << "\n--------==== Customers Menu ====--------"
              << "\nTo Add Customer ..........PRESS 1,"
-             << "\nTo Update Customer .......PRESS 2,"
+             << "\nTo View all Customer .....PRESS 2,"
              << "\nTo Delete Customer .......PRESS 3,"
              << "\nTo Search Customer .......PRESS 4,"
-             << "\nTo View all Customer......PRESS 5,"
-             << "\nTo Exit ..................PRESS 0: ";
+             << "\nTo Update Customer .......PRESS 5,"
+             << "\nExit to main menu ........PRESS 0: ";
         cin >> choice;
 
         if (choice == 0) {
@@ -326,7 +326,7 @@ int customers(){
             addCustomers(customer, file);
         }
         else if (choice == 2) {
-            updateCustomers(customer, file, temp);
+            allCustomers(customer, file);
         }
         else if (choice == 3){
             deleteCustomers(customer, file, temp);
@@ -335,7 +335,7 @@ int customers(){
             searchCustomers(customer, file);
         }
         else if (choice == 5) {
-            allCustomers(customer, file);
+            updateCustomers(customer, file, temp);
         }
         else {
             cout << "Invalid Input";

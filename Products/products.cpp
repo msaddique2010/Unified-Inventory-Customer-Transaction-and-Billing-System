@@ -20,7 +20,7 @@ int addProducts(Products &product, fstream &file){
         product.ID = stoi(count); // Convert UID string to int
         file.close();             // Close file
 
-        cout << "--------==== Add Product ====--------" << endl;
+        cout << "\n--------==== Add Product ====--------" << endl;
         cin.ignore();
         cout << "Enter Product name: "; // Gets username as input
         getline(cin, product.name);
@@ -257,7 +257,7 @@ int searchProducts(Products &product, fstream &file){
 
 int allProducts(Products &product, fstream &file){
     cout << endl;
-    cout << "--------==== Product Details ====--------" << endl;
+    cout << "\n--------==== Product Details ====--------" << endl;
 
     file.open("Products/products.csv", ios::in);
     if (!file.is_open())
@@ -306,9 +306,14 @@ int allProducts(Products &product, fstream &file){
         cout << "ID: " << product.ID << endl;
         cout << "Name: " << product.name << endl;
         cout << "Description: " << product.description << endl;
-        cout << "Description: " << product.price << endl;
+        cout << "Price: " << product.price << endl;
         cout << "Quantity: " << product.quantity << endl;
         cout << "----------------------------------" << endl;
+
+        exist = true;
+    }
+    if (!exist) {
+        cout << "No products available in Products.csv\n";
     }
     file.close();
     return 0;
@@ -323,11 +328,11 @@ int products(){
     do {
         cout << "\n--------==== Products Menu ====--------"
              << "\nTo Add Product ........PRESS 1,"
-             << "\nTo Update Product .....PRESS 2,"
+             << "\nTo View Inventory......PRESS 2,"
              << "\nTo Delete Product .....PRESS 3,"
              << "\nTo Search Product .....PRESS 4,"
-             << "\nTo View Inventory......PRESS 5,"
-             << "\nTo Exit ...............PRESS 0: ";
+             << "\nTo Update Product .....PRESS 5,"
+             << "\nExit to main menu......PRESS 0: ";
         cin >> choice;
 
         if (choice == 0) {
@@ -338,7 +343,7 @@ int products(){
             addProducts(product, file);
         }
         else if (choice == 2) {
-            updateProducts(product, file, temp);
+            allProducts(product, file);
         }
         else if (choice == 3){
             deleteProducts(product, file, temp);
@@ -347,7 +352,7 @@ int products(){
             searchProducts(product, file);
         }
         else if (choice == 5) {
-            allProducts(product, file);
+            updateProducts(product, file, temp);
         }
         else
         {

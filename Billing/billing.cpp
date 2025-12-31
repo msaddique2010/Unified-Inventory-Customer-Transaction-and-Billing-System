@@ -24,7 +24,7 @@ int billing()
     {
         cout << "\n--------==== Billing Menu ====--------"
              << "\nGenerate Bill .....PRESS 1"
-             << "\nExit .............PRESS 0"
+             << "\nExit to main menu..PRESS 0"
              << "\nEnter choice: ";
         cin >> choice;
 

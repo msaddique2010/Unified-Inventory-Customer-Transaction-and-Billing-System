@@ -33,12 +33,12 @@ int transactions()
     while (true)
     {
         int choice;
-        cout << "Transaction Details:\n"
-             << "\n--------==== Manage Transactions ====--------\n"
+        cout << "\n--------==== Manage Transactions ====--------\n"
              << "See All Products.........Press 1: \n"
              << "See All Customers........Press 2: \n"
              << "Make Transaction.........Press 3: \n"
-             << "Exit.....................Press 0: ";
+             << "View all Transaction.....Press 4: \n"
+             << "Exit to main menu........Press 0: ";
         cin >> choice;
 
         if (choice == 0)
@@ -326,6 +326,76 @@ int transactions()
             file << sale.Transaction_ID;
             file.close();
             return 0;
+        }
+        else if (choice == 4){
+            cout << endl;
+            cout << "\n--------==== Product Details ====--------" << endl;
+
+            file.open("Transactions/transactions.csv", ios::in);
+            if (!file.is_open())
+            {
+                cout << "Error in opening transactions.csv\n\n";
+                return 0;
+            }
+
+            string line;
+            bool exist = false;
+
+            getline(file, line); // Skip header
+            while (getline(file, line))
+            {
+                stringstream ss(line);
+                // Transaction_ID,Customer_ID,Product_ID,Quantity,Total_Price,DateTime
+                string transactionIdStr, customerIdStr, productIdStr,qtyStr ,totalPriceStr, dateTimeStr;
+
+                getline(ss, transactionIdStr, ',');
+                getline(ss, customerIdStr, ',');
+                getline(ss, productIdStr, ',');
+                getline(ss, qtyStr, ',');
+                getline(ss, totalPriceStr, ',');
+                getline(ss, dateTimeStr, ',');
+
+                // Remove spaces
+                transactionIdStr.erase(0, transactionIdStr.find_first_not_of(" "));
+                transactionIdStr.erase(transactionIdStr.find_last_not_of(" ") + 1);
+                sale.Transaction_ID = stoi(transactionIdStr);
+
+                customerIdStr.erase(0, customerIdStr.find_first_not_of(" "));
+                customerIdStr.erase(customerIdStr.find_last_not_of(" ") + 1);
+                sale.Customer_ID = stoi(customerIdStr);
+
+                productIdStr.erase(0, productIdStr.find_first_not_of(" "));
+                productIdStr.erase(productIdStr.find_last_not_of(" ") + 1);
+                sale.Product_ID = stoi(productIdStr);
+
+                qtyStr.erase(0, qtyStr.find_first_not_of(" "));
+                qtyStr.erase(qtyStr.find_last_not_of(" ") + 1);
+                sale.Quantity = stoi(qtyStr);
+
+                totalPriceStr.erase(0, totalPriceStr.find_first_not_of(" "));
+                totalPriceStr.erase(totalPriceStr.find_last_not_of(" ") + 1);
+                sale.totalAmount = stoi(totalPriceStr);
+
+                dateTimeStr.erase(0, dateTimeStr.find_first_not_of(" "));
+                dateTimeStr.erase(dateTimeStr.find_last_not_of(" ") + 1);
+                sale.dateTime = stoi(dateTimeStr);
+
+                cout << endl;
+                cout << "\nTransaction ID: " << sale.Transaction_ID << endl;
+                cout << "Customer ID: " << sale.Customer_ID << endl;
+                cout << "Product ID: " << sale.Product_ID << endl;
+                cout << "Quantity: " << sale.Quantity << endl;
+                cout << "Total Amount: " << sale.totalAmount << endl;
+                cout << "Date Time: " << sale.dateTime << endl;
+
+                cout << "----------------------------------" << endl;
+
+                exist = true;
+            }
+            if (!exist) {
+                cout << "No products available in Products.csv\n";
+            }
+            file.close();
         }
         else
         {

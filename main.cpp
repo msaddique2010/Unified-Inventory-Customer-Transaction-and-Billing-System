@@ -13,11 +13,11 @@ int main(){
         while(true){
             int choice;
             cout << "\n--------==== Main MENU ====--------\n" 
-                 << "Products..............Press 1: \n" 
-                 << "Customers.............Press 2: \n"
-                 << "Manage Transactions...Press 3: \n"
-                 << "Billing...............Press 4: \n"
-                 << "Exit..................Press 0: ";
+                 << "Products....................Press 1: \n" 
+                 << "Customers...................Press 2: \n"
+                 << "Manage Transactions.........Press 3: \n"
+                 << "Billing.....................Press 4: \n"
+                 << "Terminate the Program.......Press 0: ";
             cin >> choice;
             if (choice == 0){
                 cout << "You're going to exit..";
