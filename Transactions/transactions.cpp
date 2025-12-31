@@ -34,7 +34,7 @@ int transactions()
     {
         int choice;
         cout << "Transaction Details:\n"
-             << "\n--------==== Manage Transaction ====--------\n"
+             << "\n--------==== Manage Transactions ====--------\n"
              << "See All Products.........Press 1: \n"
              << "See All Customers........Press 2: \n"
              << "Make Transaction.........Press 3: \n"
