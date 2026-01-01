@@ -60,74 +60,439 @@ int updateProducts(Products &product, fstream &file, fstream &temp){
     cout << "Enter ID of the product: ";
     cin >> searchID;
 
-    file.open("Products/products.csv", ios::in);
-    temp.open("Products/temp.csv", ios::out);
+    int whatUpdate; 
+    do{
+        cout << "\n--------==== Update Menu ====--------\n"
+            << "To Update Name...........Press 1: \n"
+            << "To Update Description....Press 2: \n"
+            << "To Update Price..........Press 3: \n"
+            << "To Update Quantity.......Press 4: \n"
+            << "To Complete Product......Press 5: \n"
+            << "Exit to Product menu.....Press 0: ";
+        cin >> whatUpdate;
 
-    if (!file.is_open() || !temp.is_open()) {
-        cout << "Error opening file\n";
-        return 0;
-    }
+        if (whatUpdate == 1){
+            file.open("Products/products.csv", ios::in);
+            temp.open("Products/temp.csv", ios::out);
 
-    string line;
-    bool found = false;
+            if (!file.is_open() || !temp.is_open()) {
+                cout << "Error opening file\n";
+                return 0;
+            }
 
-    // Copy header
-    getline(file, line);
-    temp << line << endl;
+            string line;
+            bool found = false;
 
-    while (getline(file, line)) {
-        stringstream ss(line);
-        string idStr, nameStr, descStr, priceStr, qtyStr;
-
-        getline(ss, idStr, ',');
-        getline(ss, nameStr, ',');
-        getline(ss, descStr, ',');
-        getline(ss, priceStr, ',');
-        getline(ss, qtyStr, ',');
-
-        int id = stoi(idStr);
-
-        if (id == searchID){
-            found = true;
-
-            cin.ignore();
-            cout << "Enter Product Name: ";
-            getline(cin, product.name);
-
-            cout << "Enter Product Description: ";
-            getline(cin, product.description);
-
-            cout << "Enter Product Price: ";
-            cin >> product.price;
-
-            cout << "Enter Product Quantity: ";
-            cin >> product.quantity;
-
-            // Write updated row
-            temp << searchID << ", "
-                    << product.name << ", "
-                    << product.description << ", "
-                    << product.price << ", "
-                    << product.quantity << endl;
-        }
-        else {
-            // Copy original row
+            // Copy header
+            getline(file, line);
             temp << line << endl;
+
+            while (getline(file, line)) {
+                stringstream ss(line);
+                string idStr, nameStr, descStr, priceStr, qtyStr;
+
+                getline(ss, idStr, ',');
+                getline(ss, nameStr, ',');
+                getline(ss, descStr, ',');
+                getline(ss, priceStr, ',');
+                getline(ss, qtyStr, ',');
+
+                int id = stoi(idStr);
+
+                idStr.erase(0, idStr.find_first_not_of(" "));
+                idStr.erase(idStr.find_last_not_of(" ") + 1);
+                int ID = stoi(idStr);
+
+                nameStr.erase(0, nameStr.find_first_not_of(" "));
+                nameStr.erase(nameStr.find_last_not_of(" ") + 1);
+                product.name = nameStr;
+
+                descStr.erase(0, descStr.find_first_not_of(" "));
+                descStr.erase(descStr.find_last_not_of(" ") + 1);
+                product.description = descStr;
+
+                priceStr.erase(0, priceStr.find_first_not_of(" "));
+                priceStr.erase(priceStr.find_last_not_of(" ") + 1);
+                product.price = stoi(priceStr);
+
+                qtyStr.erase(0, qtyStr.find_first_not_of(" "));
+                qtyStr.erase(qtyStr.find_last_not_of(" ") + 1);
+                product.quantity = stoi(qtyStr);
+
+                if (id == searchID){
+                    found = true;
+
+                    cin.ignore();
+                    cout << "Enter Product Name: ";
+                    getline(cin, product.name);
+
+                    product.description = descStr;
+                    product.price = stoi(priceStr);
+                    product.quantity = stoi(qtyStr);
+
+                    // Write updated row
+                    temp << searchID << ", "
+                            << product.name << ", "
+                            << product.description << ", "
+                            << product.price << ", "
+                            << product.quantity << endl;
+                }
+                else {
+                    // Copy original row
+                    temp << line << endl;
+                }
+            }
+
+            file.close();
+            temp.close();
+            
+            if (found){
+                remove("Products/products.csv");
+                rename("Products/temp.csv", "Products/products.csv");
+                cout << "Product updated successfully.\n";
+            }
+            else{
+                remove("Products/temp.csv");
+                cout << "Product ID not found.\n";
+            }
         }
-    }
 
-    file.close();
-    temp.close();
+        else if (whatUpdate == 2){
+            file.open("Products/products.csv", ios::in);
+            temp.open("Products/temp.csv", ios::out);
 
-    if (found){
-        remove("Products/products.csv");
-        rename("Products/temp.csv", "../Products/products.csv");
-        cout << "Product updated successfully.\n";
-    }
-    else{
-        remove("Products/temp.csv");
-        cout << "Product ID not found.\n";
-    }
+            if (!file.is_open() || !temp.is_open()) {
+                cout << "Error opening file\n";
+                return 0;
+            }
+
+            string line;
+            bool found = false;
+
+            // Copy header
+            getline(file, line);
+            temp << line << endl;
+
+            while (getline(file, line)) {
+                stringstream ss(line);
+                string idStr, nameStr, descStr, priceStr, qtyStr;
+
+                getline(ss, idStr, ',');
+                getline(ss, nameStr, ',');
+                getline(ss, descStr, ',');
+                getline(ss, priceStr, ',');
+                getline(ss, qtyStr, ',');
+
+                int id = stoi(idStr);
+
+                idStr.erase(0, idStr.find_first_not_of(" "));
+                idStr.erase(idStr.find_last_not_of(" ") + 1);
+                int ID = stoi(idStr);
+
+                nameStr.erase(0, nameStr.find_first_not_of(" "));
+                nameStr.erase(nameStr.find_last_not_of(" ") + 1);
+                product.name = nameStr;
+
+                descStr.erase(0, descStr.find_first_not_of(" "));
+                descStr.erase(descStr.find_last_not_of(" ") + 1);
+                product.description = descStr;
+
+                priceStr.erase(0, priceStr.find_first_not_of(" "));
+                priceStr.erase(priceStr.find_last_not_of(" ") + 1);
+                product.price = stoi(priceStr);
+
+                qtyStr.erase(0, qtyStr.find_first_not_of(" "));
+                qtyStr.erase(qtyStr.find_last_not_of(" ") + 1);
+                product.quantity = stoi(qtyStr);
+
+                if (id == searchID){
+                    found = true;
+                    
+                    product.name = nameStr;
+                    
+                    cin.ignore();
+                    cout << "Enter Product Description: ";
+                    getline(cin, product.description);
+
+                    product.price = stoi(priceStr);
+                    product.quantity = stoi(qtyStr);
+
+                    // Write updated row
+                    temp << searchID << ", "
+                            << product.name << ", "
+                            << product.description << ", "
+                            << product.price << ", "
+                            << product.quantity << endl;
+                }
+                else {
+                    // Copy original row
+                    temp << line << endl;
+                }
+            }
+
+            file.close();
+            temp.close();
+            
+            if (found){
+                remove("Products/products.csv");
+                rename("Products/temp.csv", "Products/products.csv");
+                cout << "Product updated successfully.\n";
+            }
+            else{
+                remove("Products/temp.csv");
+                cout << "Product ID not found.\n";
+            }
+        }
+
+        else if (whatUpdate == 3){
+            file.open("Products/products.csv", ios::in);
+            temp.open("Products/temp.csv", ios::out);
+
+            if (!file.is_open() || !temp.is_open()) {
+                cout << "Error opening file\n";
+                return 0;
+            }
+
+            string line;
+            bool found = false;
+
+            // Copy header
+            getline(file, line);
+            temp << line << endl;
+
+            while (getline(file, line)) {
+                stringstream ss(line);
+                string idStr, nameStr, descStr, priceStr, qtyStr;
+
+                getline(ss, idStr, ',');
+                getline(ss, nameStr, ',');
+                getline(ss, descStr, ',');
+                getline(ss, priceStr, ',');
+                getline(ss, qtyStr, ',');
+
+                int id = stoi(idStr);
+
+                idStr.erase(0, idStr.find_first_not_of(" "));
+                idStr.erase(idStr.find_last_not_of(" ") + 1);
+                int ID = stoi(idStr);
+
+                nameStr.erase(0, nameStr.find_first_not_of(" "));
+                nameStr.erase(nameStr.find_last_not_of(" ") + 1);
+                product.name = nameStr;
+
+                descStr.erase(0, descStr.find_first_not_of(" "));
+                descStr.erase(descStr.find_last_not_of(" ") + 1);
+                product.description = descStr;
+
+                priceStr.erase(0, priceStr.find_first_not_of(" "));
+                priceStr.erase(priceStr.find_last_not_of(" ") + 1);
+                product.price = stoi(priceStr);
+
+                qtyStr.erase(0, qtyStr.find_first_not_of(" "));
+                qtyStr.erase(qtyStr.find_last_not_of(" ") + 1);
+                product.quantity = stoi(qtyStr);
+
+                if (id == searchID){
+                    found = true;
+                    
+                    product.name = nameStr;
+                    product.description = descStr;
+                    
+                    cin.ignore();
+                    cout << "Enter Product Price: ";
+                    cin >> product.price;
+
+                    product.quantity = stoi(qtyStr);
+
+                    // Write updated row
+                    temp << searchID << ", "
+                            << product.name << ", "
+                            << product.description << ", "
+                            << product.price << ", "
+                            << product.quantity << endl;
+                }
+                else {
+                    // Copy original row
+                    temp << line << endl;
+                }
+            }
+
+            file.close();
+            temp.close();
+            
+            if (found){
+                remove("Products/products.csv");
+                rename("Products/temp.csv", "Products/products.csv");
+                cout << "Product updated successfully.\n";
+            }
+            else{
+                remove("Products/temp.csv");
+                cout << "Product ID not found.\n";
+            }
+        }
+
+        else if (whatUpdate == 4){
+            file.open("Products/products.csv", ios::in);
+            temp.open("Products/temp.csv", ios::out);
+
+            if (!file.is_open() || !temp.is_open()) {
+                cout << "Error opening file\n";
+                return 0;
+            }
+
+            string line;
+            bool found = false;
+
+            // Copy header
+            getline(file, line);
+            temp << line << endl;
+
+            while (getline(file, line)) {
+                stringstream ss(line);
+                string idStr, nameStr, descStr, priceStr, qtyStr;
+
+                getline(ss, idStr, ',');
+                getline(ss, nameStr, ',');
+                getline(ss, descStr, ',');
+                getline(ss, priceStr, ',');
+                getline(ss, qtyStr, ',');
+
+                int id = stoi(idStr);
+
+                idStr.erase(0, idStr.find_first_not_of(" "));
+                idStr.erase(idStr.find_last_not_of(" ") + 1);
+                int ID = stoi(idStr);
+
+                nameStr.erase(0, nameStr.find_first_not_of(" "));
+                nameStr.erase(nameStr.find_last_not_of(" ") + 1);
+                product.name = nameStr;
+
+                descStr.erase(0, descStr.find_first_not_of(" "));
+                descStr.erase(descStr.find_last_not_of(" ") + 1);
+                product.description = descStr;
+
+                priceStr.erase(0, priceStr.find_first_not_of(" "));
+                priceStr.erase(priceStr.find_last_not_of(" ") + 1);
+                product.price = stoi(priceStr);
+
+                qtyStr.erase(0, qtyStr.find_first_not_of(" "));
+                qtyStr.erase(qtyStr.find_last_not_of(" ") + 1);
+                product.quantity = stoi(qtyStr);
+
+                if (id == searchID){
+                    found = true;
+                    
+                    product.name = nameStr;
+                    product.description = descStr;
+                    
+                    product.price = stoi(priceStr);
+
+                    cin.ignore();
+                    cout << "Enter Product Quantity: ";
+                    cin >> product.quantity;
+
+                    // Write updated row
+                    temp << searchID << ", "
+                            << product.name << ", "
+                            << product.description << ", "
+                            << product.price << ", "
+                            << product.quantity << endl;
+                }
+                else {
+                    // Copy original row
+                    temp << line << endl;
+                }
+            }
+
+            file.close();
+            temp.close();
+            
+            if (found){
+                remove("Products/products.csv");
+                rename("Products/temp.csv", "Products/products.csv");
+                cout << "Product updated successfully.\n";
+            }
+            else{
+                remove("Products/temp.csv");
+                cout << "Product ID not found.\n";
+            }
+        }
+        
+        else if (whatUpdate == 5){
+            file.open("Products/products.csv", ios::in);
+            temp.open("Products/temp.csv", ios::out);
+
+            if (!file.is_open() || !temp.is_open()) {
+                cout << "Error opening file\n";
+                return 0;
+            }
+
+            string line;
+            bool found = false;
+
+            // Copy header
+            getline(file, line);
+            temp << line << endl;
+
+            while (getline(file, line)) {
+                stringstream ss(line);
+                string idStr, nameStr, descStr, priceStr, qtyStr;
+
+                getline(ss, idStr, ',');
+                getline(ss, nameStr, ',');
+                getline(ss, descStr, ',');
+                getline(ss, priceStr, ',');
+                getline(ss, qtyStr, ',');
+
+                int id = stoi(idStr);
+
+                if (id == searchID){
+                    found = true;
+
+                    cin.ignore();
+                    cout << "Enter Product Name: ";
+                    getline(cin, product.name);
+
+                    cout << "Enter Product Description: ";
+                    getline(cin, product.description);
+
+                    cout << "Enter Product Price: ";
+                    cin >> product.price;
+
+                    cout << "Enter Product Quantity: ";
+                    cin >> product.quantity;
+
+                    // Write updated row
+                    temp << searchID << ", "
+                            << product.name << ", "
+                            << product.description << ", "
+                            << product.price << ", "
+                            << product.quantity << endl;
+                }
+                else {
+                    // Copy original row
+                    temp << line << endl;
+                }
+            }
+
+            file.close();
+            temp.close();
+            
+            if (found){
+                remove("Products/products.csv");
+                rename("Products/temp.csv", "Products/products.csv");
+                cout << "Product updated successfully.\n";
+            }
+            else{
+                remove("Products/temp.csv");
+                cout << "Product ID not found.\n";
+            }
+        }
+        else{
+            cout << "Invalid Input..";
+        }
+    }while(whatUpdate != 0);
+    cout << "You're exited...";
     return 0;
 }
 
