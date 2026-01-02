@@ -2,6 +2,8 @@
 #define BILLING_H
 
 #include <string>
+#include <vector>
+
 using namespace std;
 
 struct Bill
@@ -16,9 +18,7 @@ struct Bill
     string DateTime;
 };
 
-int generateBill(Bill &bill, fstream &file);
-int searchBill(Bill &bill, fstream &file);
-int allBills(Bill &bill, fstream &file);
+// Function prototype
 int billing();
 
 #endif

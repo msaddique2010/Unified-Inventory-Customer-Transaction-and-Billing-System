@@ -8,6 +8,7 @@
 #include "../Customers/customers.h"
 
 using namespace std;
+
 struct Sales
 {
     int Transaction_ID;
@@ -33,7 +34,7 @@ int transactions()
     while (true)
     {
         int choice;
-        cout << "\n--------==== Manage Transactions ====--------\n"
+        cout << "\n\n--------==== Manage Transactions ====--------\n"
              << "See All Products.........Press 1: \n"
              << "See All Customers........Press 2: \n"
              << "Make Transaction.........Press 3: \n"
@@ -46,53 +47,44 @@ int transactions()
             cout << "Exiting..";
             break;
         }
-
         else if (choice == 1)
         {
             allProducts(product, file);
         }
-
         else if (choice == 2)
         {
             allCustomers(customer, file);
         }
-
         else if (choice == 3)
         {
-            // Opens counter.txt to read the last used ID
+            string line;
+            // Read last Transaction_ID
             file.open("Transactions/counter.txt", ios::in);
             if (!file.is_open())
             {
-                cout << "Error in opening counter.txt\n";
+                cout << "Error opening counter.txt\n";
                 return 0;
             }
-            string count;
-            getline(file, count);              // Read the UID as string
-            sale.Transaction_ID = stoi(count); // Convert UID string to int
-            file.close();                      // Close file
+            getline(file, line);
+            sale.Transaction_ID = stoi(line); // base ID
+            file.close();
 
-            cout << "--------==== Create Transaction ====--------" << endl;
+            sale.Transaction_ID++; // increment once for this multi-product transaction
+
+            cout << "\n--------==== Create Transaction ====--------" << endl;
             cin.ignore();
-            cout << "Enter Customer ID: "; // Gets username as input
+            cout << "Enter Customer ID: ";
             cin >> sale.Customer_ID;
 
-            cout << "Enter Product ID: "; // Gets Password as input
-            cin >> sale.Product_ID;
-
-            cout << "Enter Quantity: "; // Gets Password as input
-            cin >> sale.Quantity;
-
+            // Validate customer
             file.open("Customers/customers.csv", ios::in);
             if (!file.is_open())
             {
-                cout << "Error in opening customers.csv\n";
+                cout << "Error opening customers.csv\n";
                 return 0;
             }
-
-            string line;
-            bool exist = false;
-
-            getline(file, line); // Skip header
+            bool customerExist = false;
+            getline(file, line); // skip header
             while (getline(file, line))
             {
                 stringstream ss(line);
@@ -103,305 +95,141 @@ int transactions()
                 getline(ss, phoneStr, ',');
                 getline(ss, typeStr, ',');
 
-                // Remove spaces
                 idStr.erase(0, idStr.find_first_not_of(" "));
                 idStr.erase(idStr.find_last_not_of(" ") + 1);
                 customer.ID = stoi(idStr);
 
-                nameStr.erase(0, nameStr.find_first_not_of(" "));
-                nameStr.erase(nameStr.find_last_not_of(" ") + 1);
-                customer.name = nameStr;
-
-                phoneStr.erase(0, phoneStr.find_first_not_of(" "));
-                phoneStr.erase(phoneStr.find_last_not_of(" ") + 1);
-                customer.phone = phoneStr;
-
-                typeStr.erase(0, typeStr.find_first_not_of(" "));
-                typeStr.erase(typeStr.find_last_not_of(" ") + 1);
-                customer.type = typeStr;
-
                 if (customer.ID == sale.Customer_ID)
                 {
-                    exist = true;
+                    customerExist = true;
                     break;
                 }
             }
             file.close();
-            if (exist)
+            if (!customerExist)
             {
-                cout << "Customer Exist..." << endl;
+                cout << "No customer with ID: " << sale.Customer_ID << ".\n";
+                continue;
+            }
+
+            // Multi-product loop
+            char more = 'y';
+            while (more == 'y' || more == 'Y')
+            {
+                cout << "Enter Product ID: ";
+                cin >> sale.Product_ID;
+
+                // Validate product existence
                 file.open("Products/Products.csv", ios::in);
                 if (!file.is_open())
                 {
-                    cout << "Error in opening products.csv\n";
+                    cout << "Error opening products.csv\n";
                     return 0;
                 }
-
-                string line;
-                bool exist = false;
-
-                getline(file, line); // Skip header
+                bool productExist = false;
+                getline(file, line); // skip header
                 while (getline(file, line))
                 {
                     stringstream ss(line);
-                    string idStr, nameStr, descriptionStr, priceStr, quantityStr;
+                    string idStr, nameStr, descStr, priceStr, qtyStr;
 
                     getline(ss, idStr, ',');
                     getline(ss, nameStr, ',');
-                    getline(ss, descriptionStr, ',');
+                    getline(ss, descStr, ',');
                     getline(ss, priceStr, ',');
-                    getline(ss, quantityStr, ',');
+                    getline(ss, qtyStr, ',');
 
-                    // Remove spaces
-                    idStr.erase(0, idStr.find_first_not_of(" "));
-                    idStr.erase(idStr.find_last_not_of(" ") + 1);
-                    product.ID = stoi(idStr);
-
-                    // nameStr.erase(0, nameStr.find_first_not_of(" "));
-                    // nameStr.erase(nameStr.find_last_not_of(" ") + 1);
-                    // product.name = nameStr;
-
-                    // descriptionStr.erase(0, descriptionStr.find_first_not_of(" "));
-                    // descriptionStr.erase(descriptionStr.find_last_not_of(" ") + 1);
-                    // product.description = descriptionStr;
-
-                    // priceStr.erase(0, priceStr.find_first_not_of(" "));
-                    // priceStr.erase(priceStr.find_last_not_of(" ") + 1);
-                    // product.price = stoi(priceStr);
-
-                    // quantityStr.erase(0, quantityStr.find_first_not_of(" "));
-                    // quantityStr.erase(quantityStr.find_last_not_of(" ") + 1);
-                    // product.quantity = stoi(quantityStr);
-
-                    if (sale.Product_ID == product.ID)
+                    if (stoi(idStr) == sale.Product_ID)
                     {
-                        exist = true;
+                        product.ID = stoi(idStr);
+                        product.quantity = stoi(qtyStr);
+                        product.price = stoi(priceStr);
+                        productExist = true;
                         break;
                     }
                 }
                 file.close();
-                if (exist)
+                if (!productExist)
                 {
-                    cout << "Product Available..." << endl;
-                    file.open("Products/Products.csv", ios::in);
-                        if (!file.is_open())
-                        {
-                            cout << "Error in opening products.csv\n";
-                            return 0;
-                        }
-
-                        string line;
-                        bool exist = false;
-
-                        getline(file, line); // Skip header
-                        while (getline(file, line))
-                        {
-                            stringstream ss(line);
-                            string idStr, nameStr, descriptionStr, priceStr, quantityStr;
-
-                            getline(ss, idStr, ',');
-                            getline(ss, nameStr, ',');
-                            getline(ss, descriptionStr, ',');
-                            getline(ss, priceStr, ',');
-                            getline(ss, quantityStr, ',');
-
-                            // Remove spaces
-                            idStr.erase(0, idStr.find_first_not_of(" "));
-                            idStr.erase(idStr.find_last_not_of(" ") + 1);
-                            product.ID = stoi(idStr);
-
-                            // nameStr.erase(0, nameStr.find_first_not_of(" "));
-                            // nameStr.erase(nameStr.find_last_not_of(" ") + 1);
-                            // product.name = nameStr;
-
-                            // descriptionStr.erase(0, descriptionStr.find_first_not_of(" "));
-                            // descriptionStr.erase(descriptionStr.find_last_not_of(" ") + 1);
-                            // product.description = descriptionStr;
-
-                            // priceStr.erase(0, priceStr.find_first_not_of(" "));
-                            // priceStr.erase(priceStr.find_last_not_of(" ") + 1);
-                            // product.price = stoi(priceStr);
-
-                            quantityStr.erase(0, quantityStr.find_first_not_of(" "));
-                            quantityStr.erase(quantityStr.find_last_not_of(" ") + 1);
-                            product.quantity = stoi(quantityStr);
-
-                            if (sale.Product_ID == product.ID && sale.Quantity <= product.quantity)
-                            {
-                                exist = true;
-                                break;
-                            }
-                        }
-                    file.close();
-                    if (exist)
-                    {
-                        cout << "Product Quatity is also available.." << endl;
-                        string line;
-
-                        file.open("Products/Products.csv", ios::in);
-                        temp.open("Products/temp.csv", ios::out);
-
-                        // copy header
-                        getline(file, line);
-                        temp << line << endl;
-
-                        while (getline(file, line))
-                        {
-                            stringstream ss(line);
-                            string idStr, name, desc, priceStr, qtyStr;
-
-                            getline(ss, idStr, ',');
-                            getline(ss, name, ',');
-                            getline(ss, desc, ',');
-                            getline(ss, priceStr, ',');
-                            getline(ss, qtyStr, ',');
-
-                            int id = stoi(idStr);
-                            int qty = stoi(qtyStr);
-                            int unitPrice = stoi(priceStr);
-                            
-                            if (id == sale.Product_ID)
-                            {
-                                sale.totalAmount = unitPrice * sale.Quantity;
-                                qty -= sale.Quantity;
-                            }
-
-                            temp << id << "," << name << "," << desc << ","
-                                << priceStr << "," << qty << endl;
-                        }
-
-                        file.close();
-                        temp.close();
-
-                        remove("Products/Products.csv");
-                        rename("Products/temp.csv", "Products/Products.csv");
-                    }
-                    else
-                    {
-                        cout << "There is not enough quantity of Product with ID: " << sale.Product_ID << endl;
-                        return 0;
-                    }
-                    file.close();
+                    cout << "Product not found.\n";
+                    continue;
                 }
-                else
+
+                cout << "Enter Quantity: ";
+                cin >> sale.Quantity;
+
+                if (sale.Quantity > product.quantity)
                 {
-                    cout << "There is no product with ID: " << sale.Product_ID << endl;
-                    return 0;
+                    cout << "Not enough stock for this product.\n";
+                    continue;
+                }
+
+                // Update stock
+                file.open("Products/Products.csv", ios::in);
+                temp.open("Products/temp.csv", ios::out);
+                getline(file, line);
+                temp << line << endl;
+                while (getline(file, line))
+                {
+                    stringstream ss(line);
+                    string idStr, name, desc, priceStr, qtyStr;
+                    getline(ss, idStr, ',');
+                    getline(ss, name, ',');
+                    getline(ss, desc, ',');
+                    getline(ss, priceStr, ',');
+                    getline(ss, qtyStr, ',');
+
+                    int id = stoi(idStr);
+                    int qty = stoi(qtyStr);
+                    if (id == sale.Product_ID)
+                        qty -= sale.Quantity;
+
+                    temp << id << "," << name << "," << desc << "," << priceStr << "," << qty << "\n";
                 }
                 file.close();
-            }
-            else
-            {
-                cout << "There is no customer with ID: " << customer.ID;
-                return 0;
-            }
-            // Step 3: Append
-            sale.Transaction_ID++; // Increment UID
-            file.open("Transactions/transactions.csv", ios::out | ios::app);
-            if (!file.is_open())
-            {
-                cout << "Error in opening products.csv for writing\n";
-                return 0;
-            }
-            file << sale.Transaction_ID << ", " << sale.Customer_ID << ", " << sale.Product_ID << ", " << sale.Quantity << ", " << sale.totalAmount << ", " << dateTime << "\n";
-            file.close();
+                temp.close();
+                remove("Products/Products.csv");
+                rename("Products/temp.csv", "Products/Products.csv");
 
-            cout << "\n\n================================\n"
-                 << "Transaction ID: " << sale.Transaction_ID << "\n"
-                 << "Customer ID: " << sale.Customer_ID << "\n"
-                 << "Product ID: " << sale.Product_ID << "\n"
-                 << "Product Quantity: " << sale.Quantity << "\n"
-                 << "Amount: " << sale.totalAmount << "\n"
-                 << "Added at: " << dateTime << "\n"
-                 << "================================" << endl;
+                sale.totalAmount = sale.Quantity * product.price;
 
+                // Append to transactions.csv
+                file.open("Transactions/transactions.csv", ios::out | ios::app);
+                file << sale.Transaction_ID << "," << sale.Customer_ID << "," << sale.Product_ID << "," << sale.Quantity << "," << sale.totalAmount << "," << dateTime << "\n";
+                file.close();
 
-            // Step 4: Update counter.txt
+                cout << "Product added. Add another product? (y/n): ";
+                cin >> more;
+            }
+
+            // Update counter
             file.open("Transactions/counter.txt", ios::out);
-            if (!file.is_open())
-            {
-                cout << "Error opening counter.txt for writing\n";
-                return 0;
-            }
             file << sale.Transaction_ID;
             file.close();
-            return 0;
-        }
-        else if (choice == 4){
-            cout << endl;
-            cout << "\n--------==== Product Details ====--------" << endl;
 
+            cout << "\nTransaction completed. Transaction ID: " << sale.Transaction_ID << endl;
+        }
+        else if (choice == 4)
+        {
+            string line;
+            cout << "\n--------==== Transaction Records ====--------\n";
             file.open("Transactions/transactions.csv", ios::in);
             if (!file.is_open())
             {
-                cout << "Error in opening transactions.csv\n\n";
-                return 0;
+                cout << "Error opening transactions.csv\n";
+                continue;
             }
-
-            string line;
-            bool exist = false;
-
-            getline(file, line); // Skip header
+            getline(file, line); // skip header
             while (getline(file, line))
             {
-                stringstream ss(line);
-                // Transaction_ID,Customer_ID,Product_ID,Quantity,Total_Price,DateTime
-                string transactionIdStr, customerIdStr, productIdStr,qtyStr ,totalPriceStr, dateTimeStr;
-
-                getline(ss, transactionIdStr, ',');
-                getline(ss, customerIdStr, ',');
-                getline(ss, productIdStr, ',');
-                getline(ss, qtyStr, ',');
-                getline(ss, totalPriceStr, ',');
-                getline(ss, dateTimeStr, ',');
-
-                // Remove spaces
-                transactionIdStr.erase(0, transactionIdStr.find_first_not_of(" "));
-                transactionIdStr.erase(transactionIdStr.find_last_not_of(" ") + 1);
-                sale.Transaction_ID = stoi(transactionIdStr);
-
-                customerIdStr.erase(0, customerIdStr.find_first_not_of(" "));
-                customerIdStr.erase(customerIdStr.find_last_not_of(" ") + 1);
-                sale.Customer_ID = stoi(customerIdStr);
-
-                productIdStr.erase(0, productIdStr.find_first_not_of(" "));
-                productIdStr.erase(productIdStr.find_last_not_of(" ") + 1);
-                sale.Product_ID = stoi(productIdStr);
-
-                qtyStr.erase(0, qtyStr.find_first_not_of(" "));
-                qtyStr.erase(qtyStr.find_last_not_of(" ") + 1);
-                sale.Quantity = stoi(qtyStr);
-
-                totalPriceStr.erase(0, totalPriceStr.find_first_not_of(" "));
-                totalPriceStr.erase(totalPriceStr.find_last_not_of(" ") + 1);
-                sale.totalAmount = stoi(totalPriceStr);
-
-                dateTimeStr.erase(0, dateTimeStr.find_first_not_of(" "));
-                dateTimeStr.erase(dateTimeStr.find_last_not_of(" ") + 1);
-                sale.dateTime = stoi(dateTimeStr);
-
-                cout << endl;
-                cout << "\nTransaction ID: " << sale.Transaction_ID << endl;
-                cout << "Customer ID: " << sale.Customer_ID << endl;
-                cout << "Product ID: " << sale.Product_ID << endl;
-                cout << "Quantity: " << sale.Quantity << endl;
-                cout << "Total Amount: " << sale.totalAmount << endl;
-                cout << "Date Time: " << sale.dateTime << endl;
-
-                cout << "----------------------------------" << endl;
-
-                exist = true;
-            }
-            if (!exist) {
-                cout << "No products available in Products.csv\n";
+                cout << line << endl;
             }
             file.close();
         }
         else
         {
-            cout << "Invalid Input";
+            cout << "Invalid Input\n";
         }
     }
-
     return 0;
 }

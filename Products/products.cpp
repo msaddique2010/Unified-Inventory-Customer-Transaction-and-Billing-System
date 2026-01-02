@@ -55,401 +55,127 @@ int addProducts(Products &product, fstream &file){
     return 0;
 }
 
-int updateProducts(Products &product, fstream &file, fstream &temp){
+int updateProducts(Products &product, fstream &file, fstream &temp)
+{
     int searchID;
-    cout << "Enter ID of the product: ";
+    cout << "\nEnter ID of the product: ";
     cin >> searchID;
 
-    int whatUpdate; 
-    do{
+    // ---------- Check if product exists ----------
+    file.open("Products/products.csv", ios::in);
+    if (!file.is_open())
+    {
+        cout << "Error in opening products.csv\n";
+        return 0;
+    }
+
+    string line;
+    bool exists = false;
+
+    getline(file, line); // skip header
+    while (getline(file, line))
+    {
+        stringstream ss(line);
+        string idStr, nameStr;
+
+        getline(ss, idStr, ',');
+        getline(ss, nameStr, ',');
+
+        if (stoi(idStr) == searchID)
+        {
+            exists = true;
+            product.name = nameStr;
+            break;
+        }
+    }
+    file.close();
+
+    if (!exists)
+    {
+        cout << "There is no product with given ID.\n";
+        return 0;
+    }
+
+    cout << "---------------------------\n";
+    cout << "You Selected: " << product.name << endl;
+    cout << "---------------------------\n";
+
+    int whatUpdate;
+
+    do
+    {
         cout << "\n--------==== Update Menu ====--------\n"
-            << "To Update Name...........Press 1: \n"
-            << "To Update Description....Press 2: \n"
-            << "To Update Price..........Press 3: \n"
-            << "To Update Quantity.......Press 4: \n"
-            << "To Complete Product......Press 5: \n"
-            << "Exit to Product menu.....Press 0: ";
+             << "To Update Name.............Press 1\n"
+             << "To Update Description.....Press 2\n"
+             << "To Update Price...........Press 3\n"
+             << "To Update Quantity........Press 4\n"
+             << "Update Whole Product......Press 5\n"
+             << "Exit to Product menu......Press 0\n"
+             << "Choice: ";
         cin >> whatUpdate;
 
-        if (whatUpdate == 1){
-            file.open("Products/products.csv", ios::in);
-            temp.open("Products/temp.csv", ios::out);
+        if (whatUpdate == 0)
+            break;
 
-            if (!file.is_open() || !temp.is_open()) {
-                cout << "Error opening file\n";
-                return 0;
-            }
+        file.open("Products/products.csv", ios::in);
+        temp.open("Products/temp.csv", ios::out);
 
-            string line;
-            bool found = false;
+        if (!file.is_open() || !temp.is_open())
+        {
+            cout << "Error opening file\n";
+            return 0;
+        }
 
-            // Copy header
-            getline(file, line);
-            temp << line << endl;
+        bool found = false;
+        getline(file, line);        // header
+        temp << line << endl;       // write header
 
-            while (getline(file, line)) {
-                stringstream ss(line);
-                string idStr, nameStr, descStr, priceStr, qtyStr;
+        while (getline(file, line))
+        {
+            stringstream ss(line);
+            string idStr, nameStr, descStr, priceStr, qtyStr;
 
-                getline(ss, idStr, ',');
-                getline(ss, nameStr, ',');
-                getline(ss, descStr, ',');
-                getline(ss, priceStr, ',');
-                getline(ss, qtyStr, ',');
+            getline(ss, idStr, ',');
+            getline(ss, nameStr, ',');
+            getline(ss, descStr, ',');
+            getline(ss, priceStr, ',');
+            getline(ss, qtyStr, ',');
 
-                int id = stoi(idStr);
+            int id = stoi(idStr);
 
-                idStr.erase(0, idStr.find_first_not_of(" "));
-                idStr.erase(idStr.find_last_not_of(" ") + 1);
-                int ID = stoi(idStr);
+            if (id == searchID)
+            {
+                found = true;
 
-                nameStr.erase(0, nameStr.find_first_not_of(" "));
-                nameStr.erase(nameStr.find_last_not_of(" ") + 1);
                 product.name = nameStr;
-
-                descStr.erase(0, descStr.find_first_not_of(" "));
-                descStr.erase(descStr.find_last_not_of(" ") + 1);
                 product.description = descStr;
-
-                priceStr.erase(0, priceStr.find_first_not_of(" "));
-                priceStr.erase(priceStr.find_last_not_of(" ") + 1);
                 product.price = stoi(priceStr);
-
-                qtyStr.erase(0, qtyStr.find_first_not_of(" "));
-                qtyStr.erase(qtyStr.find_last_not_of(" ") + 1);
                 product.quantity = stoi(qtyStr);
 
-                if (id == searchID){
-                    found = true;
+                cin.ignore();
 
-                    cin.ignore();
+                if (whatUpdate == 1)
+                {
                     cout << "Enter Product Name: ";
                     getline(cin, product.name);
-
-                    product.description = descStr;
-                    product.price = stoi(priceStr);
-                    product.quantity = stoi(qtyStr);
-
-                    // Write updated row
-                    temp << searchID << ", "
-                            << product.name << ", "
-                            << product.description << ", "
-                            << product.price << ", "
-                            << product.quantity << endl;
                 }
-                else {
-                    // Copy original row
-                    temp << line << endl;
-                }
-            }
-
-            file.close();
-            temp.close();
-            
-            if (found){
-                remove("Products/products.csv");
-                rename("Products/temp.csv", "Products/products.csv");
-                cout << "Product updated successfully.\n";
-            }
-            else{
-                remove("Products/temp.csv");
-                cout << "Product ID not found.\n";
-            }
-        }
-
-        else if (whatUpdate == 2){
-            file.open("Products/products.csv", ios::in);
-            temp.open("Products/temp.csv", ios::out);
-
-            if (!file.is_open() || !temp.is_open()) {
-                cout << "Error opening file\n";
-                return 0;
-            }
-
-            string line;
-            bool found = false;
-
-            // Copy header
-            getline(file, line);
-            temp << line << endl;
-
-            while (getline(file, line)) {
-                stringstream ss(line);
-                string idStr, nameStr, descStr, priceStr, qtyStr;
-
-                getline(ss, idStr, ',');
-                getline(ss, nameStr, ',');
-                getline(ss, descStr, ',');
-                getline(ss, priceStr, ',');
-                getline(ss, qtyStr, ',');
-
-                int id = stoi(idStr);
-
-                idStr.erase(0, idStr.find_first_not_of(" "));
-                idStr.erase(idStr.find_last_not_of(" ") + 1);
-                int ID = stoi(idStr);
-
-                nameStr.erase(0, nameStr.find_first_not_of(" "));
-                nameStr.erase(nameStr.find_last_not_of(" ") + 1);
-                product.name = nameStr;
-
-                descStr.erase(0, descStr.find_first_not_of(" "));
-                descStr.erase(descStr.find_last_not_of(" ") + 1);
-                product.description = descStr;
-
-                priceStr.erase(0, priceStr.find_first_not_of(" "));
-                priceStr.erase(priceStr.find_last_not_of(" ") + 1);
-                product.price = stoi(priceStr);
-
-                qtyStr.erase(0, qtyStr.find_first_not_of(" "));
-                qtyStr.erase(qtyStr.find_last_not_of(" ") + 1);
-                product.quantity = stoi(qtyStr);
-
-                if (id == searchID){
-                    found = true;
-                    
-                    product.name = nameStr;
-                    
-                    cin.ignore();
+                else if (whatUpdate == 2)
+                {
                     cout << "Enter Product Description: ";
                     getline(cin, product.description);
-
-                    product.price = stoi(priceStr);
-                    product.quantity = stoi(qtyStr);
-
-                    // Write updated row
-                    temp << searchID << ", "
-                            << product.name << ", "
-                            << product.description << ", "
-                            << product.price << ", "
-                            << product.quantity << endl;
                 }
-                else {
-                    // Copy original row
-                    temp << line << endl;
-                }
-            }
-
-            file.close();
-            temp.close();
-            
-            if (found){
-                remove("Products/products.csv");
-                rename("Products/temp.csv", "Products/products.csv");
-                cout << "Product updated successfully.\n";
-            }
-            else{
-                remove("Products/temp.csv");
-                cout << "Product ID not found.\n";
-            }
-        }
-
-        else if (whatUpdate == 3){
-            file.open("Products/products.csv", ios::in);
-            temp.open("Products/temp.csv", ios::out);
-
-            if (!file.is_open() || !temp.is_open()) {
-                cout << "Error opening file\n";
-                return 0;
-            }
-
-            string line;
-            bool found = false;
-
-            // Copy header
-            getline(file, line);
-            temp << line << endl;
-
-            while (getline(file, line)) {
-                stringstream ss(line);
-                string idStr, nameStr, descStr, priceStr, qtyStr;
-
-                getline(ss, idStr, ',');
-                getline(ss, nameStr, ',');
-                getline(ss, descStr, ',');
-                getline(ss, priceStr, ',');
-                getline(ss, qtyStr, ',');
-
-                int id = stoi(idStr);
-
-                idStr.erase(0, idStr.find_first_not_of(" "));
-                idStr.erase(idStr.find_last_not_of(" ") + 1);
-                int ID = stoi(idStr);
-
-                nameStr.erase(0, nameStr.find_first_not_of(" "));
-                nameStr.erase(nameStr.find_last_not_of(" ") + 1);
-                product.name = nameStr;
-
-                descStr.erase(0, descStr.find_first_not_of(" "));
-                descStr.erase(descStr.find_last_not_of(" ") + 1);
-                product.description = descStr;
-
-                priceStr.erase(0, priceStr.find_first_not_of(" "));
-                priceStr.erase(priceStr.find_last_not_of(" ") + 1);
-                product.price = stoi(priceStr);
-
-                qtyStr.erase(0, qtyStr.find_first_not_of(" "));
-                qtyStr.erase(qtyStr.find_last_not_of(" ") + 1);
-                product.quantity = stoi(qtyStr);
-
-                if (id == searchID){
-                    found = true;
-                    
-                    product.name = nameStr;
-                    product.description = descStr;
-                    
-                    cin.ignore();
+                else if (whatUpdate == 3)
+                {
                     cout << "Enter Product Price: ";
                     cin >> product.price;
-
-                    product.quantity = stoi(qtyStr);
-
-                    // Write updated row
-                    temp << searchID << ", "
-                            << product.name << ", "
-                            << product.description << ", "
-                            << product.price << ", "
-                            << product.quantity << endl;
                 }
-                else {
-                    // Copy original row
-                    temp << line << endl;
-                }
-            }
-
-            file.close();
-            temp.close();
-            
-            if (found){
-                remove("Products/products.csv");
-                rename("Products/temp.csv", "Products/products.csv");
-                cout << "Product updated successfully.\n";
-            }
-            else{
-                remove("Products/temp.csv");
-                cout << "Product ID not found.\n";
-            }
-        }
-
-        else if (whatUpdate == 4){
-            file.open("Products/products.csv", ios::in);
-            temp.open("Products/temp.csv", ios::out);
-
-            if (!file.is_open() || !temp.is_open()) {
-                cout << "Error opening file\n";
-                return 0;
-            }
-
-            string line;
-            bool found = false;
-
-            // Copy header
-            getline(file, line);
-            temp << line << endl;
-
-            while (getline(file, line)) {
-                stringstream ss(line);
-                string idStr, nameStr, descStr, priceStr, qtyStr;
-
-                getline(ss, idStr, ',');
-                getline(ss, nameStr, ',');
-                getline(ss, descStr, ',');
-                getline(ss, priceStr, ',');
-                getline(ss, qtyStr, ',');
-
-                int id = stoi(idStr);
-
-                idStr.erase(0, idStr.find_first_not_of(" "));
-                idStr.erase(idStr.find_last_not_of(" ") + 1);
-                int ID = stoi(idStr);
-
-                nameStr.erase(0, nameStr.find_first_not_of(" "));
-                nameStr.erase(nameStr.find_last_not_of(" ") + 1);
-                product.name = nameStr;
-
-                descStr.erase(0, descStr.find_first_not_of(" "));
-                descStr.erase(descStr.find_last_not_of(" ") + 1);
-                product.description = descStr;
-
-                priceStr.erase(0, priceStr.find_first_not_of(" "));
-                priceStr.erase(priceStr.find_last_not_of(" ") + 1);
-                product.price = stoi(priceStr);
-
-                qtyStr.erase(0, qtyStr.find_first_not_of(" "));
-                qtyStr.erase(qtyStr.find_last_not_of(" ") + 1);
-                product.quantity = stoi(qtyStr);
-
-                if (id == searchID){
-                    found = true;
-                    
-                    product.name = nameStr;
-                    product.description = descStr;
-                    
-                    product.price = stoi(priceStr);
-
-                    cin.ignore();
+                else if (whatUpdate == 4)
+                {
                     cout << "Enter Product Quantity: ";
                     cin >> product.quantity;
-
-                    // Write updated row
-                    temp << searchID << ", "
-                            << product.name << ", "
-                            << product.description << ", "
-                            << product.price << ", "
-                            << product.quantity << endl;
                 }
-                else {
-                    // Copy original row
-                    temp << line << endl;
-                }
-            }
-
-            file.close();
-            temp.close();
-            
-            if (found){
-                remove("Products/products.csv");
-                rename("Products/temp.csv", "Products/products.csv");
-                cout << "Product updated successfully.\n";
-            }
-            else{
-                remove("Products/temp.csv");
-                cout << "Product ID not found.\n";
-            }
-        }
-        
-        else if (whatUpdate == 5){
-            file.open("Products/products.csv", ios::in);
-            temp.open("Products/temp.csv", ios::out);
-
-            if (!file.is_open() || !temp.is_open()) {
-                cout << "Error opening file\n";
-                return 0;
-            }
-
-            string line;
-            bool found = false;
-
-            // Copy header
-            getline(file, line);
-            temp << line << endl;
-
-            while (getline(file, line)) {
-                stringstream ss(line);
-                string idStr, nameStr, descStr, priceStr, qtyStr;
-
-                getline(ss, idStr, ',');
-                getline(ss, nameStr, ',');
-                getline(ss, descStr, ',');
-                getline(ss, priceStr, ',');
-                getline(ss, qtyStr, ',');
-
-                int id = stoi(idStr);
-
-                if (id == searchID){
-                    found = true;
-
-                    cin.ignore();
+                else if (whatUpdate == 5)
+                {
                     cout << "Enter Product Name: ";
                     getline(cin, product.name);
 
@@ -461,38 +187,38 @@ int updateProducts(Products &product, fstream &file, fstream &temp){
 
                     cout << "Enter Product Quantity: ";
                     cin >> product.quantity;
-
-                    // Write updated row
-                    temp << searchID << ", "
-                            << product.name << ", "
-                            << product.description << ", "
-                            << product.price << ", "
-                            << product.quantity << endl;
                 }
-                else {
-                    // Copy original row
-                    temp << line << endl;
-                }
-            }
 
-            file.close();
-            temp.close();
-            
-            if (found){
-                remove("Products/products.csv");
-                rename("Products/temp.csv", "Products/products.csv");
-                cout << "Product updated successfully.\n";
+                temp << id << ", "
+                     << product.name << ", "
+                     << product.description << ", "
+                     << product.price << ", "
+                     << product.quantity << endl;
             }
-            else{
-                remove("Products/temp.csv");
-                cout << "Product ID not found.\n";
+            else
+            {
+                temp << line << endl;
             }
         }
-        else{
-            cout << "Invalid Input..";
+
+        file.close();
+        temp.close();
+
+        if (found)
+        {
+            remove("Products/products.csv");
+            rename("Products/temp.csv", "Products/products.csv");
+            cout << "Product updated successfully.\n";
         }
-    }while(whatUpdate != 0);
-    cout << "You're exited...";
+        else
+        {
+            remove("Products/temp.csv");
+            cout << "Product ID not found.\n";
+        }
+
+    } while (whatUpdate != 0);
+
+    cout << "You're exited...\n";
     return 0;
 }
 
@@ -541,7 +267,7 @@ int deleteProducts(Products &product, fstream &file, fstream &temp){
 
     if (found) {
         remove("Products/products.csv");
-        rename("Products/temp.csv", "../Products/products.csv");
+        rename("Products/temp.csv", "Products/products.csv");
         cout << "Product Deleted successfully.\n";
     }
     else
@@ -616,7 +342,6 @@ int searchProducts(Products &product, fstream &file){
     {
         cout << "There is no product with ID: " << product.ID;
     }
-    file.close();
     return 0;
 }
 
@@ -701,7 +426,7 @@ int products(){
         cin >> choice;
 
         if (choice == 0) {
-            cout << "You'r Logged out.\n";
+            cout << "You'r Exited from Product Menu.\n";
             break;
         }
         else if (choice == 1) {

@@ -58,358 +58,172 @@ int addCustomers(Customers &customer, fstream &file){
     return 0;
 }
 
-int updateCustomers(Customers &customer, fstream &file, fstream &temp){
+int updateCustomers(Customers &customer, fstream &file, fstream &temp)
+{
     int searchID;
-    cout << "Enter ID of the customer: ";
+    cout << "\nEnter ID of the customer: ";
     cin >> searchID;
 
+    // ---------- Check if customer exists ----------
+    file.open("Customers/customers.csv", ios::in);
+    if (!file.is_open())
+    {
+        cout << "Error in opening customers.csv\n";
+        return 0;
+    }
+
+    string line;
+    bool exists = false;
+
+    getline(file, line); // skip header
+    while (getline(file, line))
+    {
+        stringstream ss(line);
+        string idStr, nameStr;
+
+        getline(ss, idStr, ',');
+        getline(ss, nameStr, ',');
+
+        if (stoi(idStr) == searchID)
+        {
+            exists = true;
+            customer.name = nameStr;
+            break;
+        }
+    }
+    file.close();
+
+    if (!exists)
+    {
+        cout << "There is no customer with given ID.\n";
+        return 0;
+    }
+
+    cout << "---------------------------\n";
+    cout << "You Selected: " << customer.name << endl;
+    cout << "---------------------------\n";
+
     int whatUpdate;
-     do{
+
+    do
+    {
         cout << "\n--------==== Update Menu ====--------\n"
-            << "To Update Name...........Press 1: \n"
-            << "To Update Phone No.......Press 2: \n"
-            << "To Update Type...........Press 3: \n"
-            << "To Complete Product......Press 4: \n"
-            << "Exit to Product menu.....Press 0: ";
+             << "To Update Name...........Press 1\n"
+             << "To Update Phone..........Press 2\n"
+             << "To Update Type...........Press 3\n"
+             << "Update Whole Customer....Press 4\n"
+             << "Exit to Customer menu....Press 0\n"
+             << "Choice: ";
         cin >> whatUpdate;
 
-        if (whatUpdate == 1){
-            file.open("Customers/customers.csv", ios::in);
-            temp.open("Customers/temp.csv", ios::out);
+        if (whatUpdate == 0)
+            break;
 
-            if (!file.is_open() || !temp.is_open()) {
-                cout << "Error opening file\n";
-                return 0;
-            }
+        file.open("Customers/customers.csv", ios::in);
+        temp.open("Customers/temp.csv", ios::out);
 
-            string line;
-            bool found = false;
+        if (!file.is_open() || !temp.is_open())
+        {
+            cout << "Error opening file\n";
+            return 0;
+        }
 
-            // Copy header
-            getline(file, line);
-            temp << line << endl;
+        bool found = false;
+        getline(file, line);     // header
+        temp << line << endl;    // write header
 
-            while (getline(file, line)) {
-                stringstream ss(line);
-                string idStr, nameStr, phoneStr, typeStr;
+        while (getline(file, line))
+        {
+            stringstream ss(line);
+            string idStr, nameStr, phoneStr, typeStr;
 
-                getline(ss, idStr, ',');
-                getline(ss, nameStr, ',');
-                getline(ss, phoneStr, ',');
-                getline(ss, typeStr, ',');
+            getline(ss, idStr, ',');
+            getline(ss, nameStr, ',');
+            getline(ss, phoneStr, ',');
+            getline(ss, typeStr, ',');
 
-                // Remove spaces
-                idStr.erase(0, idStr.find_first_not_of(" "));
-                idStr.erase(idStr.find_last_not_of(" ") + 1);
-                customer.ID = stoi(idStr);
+            int id = stoi(idStr);
 
-                nameStr.erase(0, nameStr.find_first_not_of(" "));
-                nameStr.erase(nameStr.find_last_not_of(" ") + 1);
+            if (id == searchID)
+            {
+                found = true;
+
+                customer.ID = id;
                 customer.name = nameStr;
-
-                phoneStr.erase(0, phoneStr.find_first_not_of(" "));
-                phoneStr.erase(phoneStr.find_last_not_of(" ") + 1);
                 customer.phone = phoneStr;
-
-                typeStr.erase(0, typeStr.find_first_not_of(" "));
-                typeStr.erase(typeStr.find_last_not_of(" ") + 1);
                 customer.type = typeStr;
 
-                if (customer.ID == searchID){
-                    found = true;
+                cin.ignore();
 
-                    cin.ignore();
+                if (whatUpdate == 1)
+                {
+                    cout << "Enter Customer Name: ";
+                    getline(cin, customer.name);
+                }
+                else if (whatUpdate == 2)
+                {
+                    cout << "Enter Customer Phone: ";
+                    getline(cin, customer.phone);
+                }
+                else if (whatUpdate == 3)
+                {
+                    cout << "Enter Customer Type (g/r): ";
+                    getline(cin, customer.type);
+
+                    if (customer.type == "g" || customer.type == "G" || customer.type == "general")
+                        customer.type = "General";
+                    else
+                        customer.type = "Regular";
+                }
+                else if (whatUpdate == 4)
+                {
                     cout << "Enter Customer Name: ";
                     getline(cin, customer.name);
 
-                    customer.phone = phoneStr;
-                    customer.type = typeStr;
-
-                    // Write updated row
-                    temp << searchID << ", "
-                         << customer.name << ", "
-                         << customer.phone << ", "
-                         << customer.type << endl;
-                }
-
-                else {
-                    // Copy original row
-                    temp << line << endl;
-                }
-            }
-
-            file.close();
-            temp.close();
-            
-            if (found){
-                remove("Customers/customers.csv");
-                rename("Customers/temp.csv", "Customers/customers.csv");
-                cout << "Product updated successfully.\n";
-            }
-            else{
-                remove("Customers/temp.csv");
-                cout << "Product ID not found.\n";
-            }
-        }
-
-        if (whatUpdate == 2){
-            file.open("Customers/customers.csv", ios::in);
-            temp.open("Customers/temp.csv", ios::out);
-
-            if (!file.is_open() || !temp.is_open()) {
-                cout << "Error opening file\n";
-                return 0;
-            }
-
-            string line;
-            bool found = false;
-
-            // Copy header
-            getline(file, line);
-            temp << line << endl;
-
-            while (getline(file, line)) {
-                stringstream ss(line);
-                string idStr, nameStr, phoneStr, typeStr;
-
-                getline(ss, idStr, ',');
-                getline(ss, nameStr, ',');
-                getline(ss, phoneStr, ',');
-                getline(ss, typeStr, ',');
-
-                // Remove spaces
-                idStr.erase(0, idStr.find_first_not_of(" "));
-                idStr.erase(idStr.find_last_not_of(" ") + 1);
-                customer.ID = stoi(idStr);
-
-                nameStr.erase(0, nameStr.find_first_not_of(" "));
-                nameStr.erase(nameStr.find_last_not_of(" ") + 1);
-                customer.name = nameStr;
-
-                phoneStr.erase(0, phoneStr.find_first_not_of(" "));
-                phoneStr.erase(phoneStr.find_last_not_of(" ") + 1);
-                customer.phone = phoneStr;
-
-                typeStr.erase(0, typeStr.find_first_not_of(" "));
-                typeStr.erase(typeStr.find_last_not_of(" ") + 1);
-                customer.type = typeStr;
-
-                if (customer.ID == searchID){
-                    found = true;
-
-                    cin.ignore();
-
-                    customer.name = nameStr;
-
-                    cout << "Enter Customer Phone Number: ";
+                    cout << "Enter Customer Phone: ";
                     getline(cin, customer.phone);
 
-                    customer.type = typeStr;
-
-                    // Write updated row
-                    temp << searchID << ", "
-                         << customer.name << ", "
-                         << customer.phone << ", "
-                         << customer.type << endl;
-                }
-
-                else {
-                    // Copy original row
-                    temp << line << endl;
-                }
-            }
-
-            file.close();
-            temp.close();
-            
-            if (found){
-                remove("Customers/customers.csv");
-                rename("Customers/temp.csv", "Customers/customers.csv");
-                cout << "Product updated successfully.\n";
-            }
-            else{
-                remove("Customers/temp.csv");
-                cout << "Product ID not found.\n";
-            }
-        }
-
-        if (whatUpdate == 3){
-            file.open("Customers/customers.csv", ios::in);
-            temp.open("Customers/temp.csv", ios::out);
-
-            if (!file.is_open() || !temp.is_open()) {
-                cout << "Error opening file\n";
-                return 0;
-            }
-
-            string line;
-            bool found = false;
-
-            // Copy header
-            getline(file, line);
-            temp << line << endl;
-
-            while (getline(file, line)) {
-                stringstream ss(line);
-                string idStr, nameStr, phoneStr, typeStr;
-
-                getline(ss, idStr, ',');
-                getline(ss, nameStr, ',');
-                getline(ss, phoneStr, ',');
-                getline(ss, typeStr, ',');
-
-                // Remove spaces
-                idStr.erase(0, idStr.find_first_not_of(" "));
-                idStr.erase(idStr.find_last_not_of(" ") + 1);
-                customer.ID = stoi(idStr);
-
-                nameStr.erase(0, nameStr.find_first_not_of(" "));
-                nameStr.erase(nameStr.find_last_not_of(" ") + 1);
-                customer.name = nameStr;
-
-                phoneStr.erase(0, phoneStr.find_first_not_of(" "));
-                phoneStr.erase(phoneStr.find_last_not_of(" ") + 1);
-                customer.phone = phoneStr;
-
-                typeStr.erase(0, typeStr.find_first_not_of(" "));
-                typeStr.erase(typeStr.find_last_not_of(" ") + 1);
-                customer.type = typeStr;
-
-                if (customer.ID == searchID){
-                    found = true;
-
-                    cin.ignore();
-
-                    customer.name = nameStr;
-
-                    customer.phone = phoneStr;
-
-                    cout << "Enter Customer Type(general(g), regular(r)): ";
+                    cout << "Enter Customer Type (g/r): ";
                     getline(cin, customer.type);
 
-                    if (customer.type == "g" || customer.type == "G" || customer.type == "general") {
+                    if (customer.type == "g" || customer.type == "G" || customer.type == "general")
                         customer.type = "General";
-                    }
-                    else{
+                    else
                         customer.type = "Regular";
-                    }
-
-                    // Write updated row
-                    temp << searchID << ", "
-                         << customer.name << ", "
-                         << customer.phone << ", "
-                         << customer.type << endl;
                 }
 
-                else {
-                    // Copy original row
-                    temp << line << endl;
-                }
+                temp << id << ", "
+                     << customer.name << ", "
+                     << customer.phone << ", "
+                     << customer.type << endl;
             }
-
-            file.close();
-            temp.close();
-            
-            if (found){
-                remove("Customers/customers.csv");
-                rename("Customers/temp.csv", "Customers/customers.csv");
-                cout << "Product updated successfully.\n";
-            }
-            else{
-                remove("Customers/temp.csv");
-                cout << "Product ID not found.\n";
+            else
+            {
+                temp << line << endl;
             }
         }
 
-        else if (whatUpdate == 4){
-            file.open("Customers/customers.csv", ios::in);
-            temp.open("Customers/temp.csv", ios::out);
+        file.close();
+        temp.close();
 
-            if (!file.is_open() || !temp.is_open()) {
-                cout << "Error opening file\n";
-                return 0;
-            }
-
-            string line;
-            bool found = false;
-
-            // Copy header
-            getline(file, line);
-            temp << line << endl;
-
-            while (getline(file, line)) {
-                stringstream ss(line);
-                string idStr, nameStr, phoneStr, typeStr;
-
-                getline(ss, idStr, ',');
-                getline(ss, nameStr, ',');
-                getline(ss, phoneStr, ',');
-                getline(ss, typeStr, ',');
-
-                // Remove spaces
-                idStr.erase(0, idStr.find_first_not_of(" "));
-                idStr.erase(idStr.find_last_not_of(" ") + 1);
-                customer.ID = stoi(idStr);
-
-                nameStr.erase(0, nameStr.find_first_not_of(" "));
-                nameStr.erase(nameStr.find_last_not_of(" ") + 1);
-                customer.name = nameStr;
-
-                phoneStr.erase(0, phoneStr.find_first_not_of(" "));
-                phoneStr.erase(phoneStr.find_last_not_of(" ") + 1);
-                customer.phone = phoneStr;
-
-                typeStr.erase(0, typeStr.find_first_not_of(" "));
-                typeStr.erase(typeStr.find_last_not_of(" ") + 1);
-                customer.type = typeStr;
-
-                if (customer.ID == searchID){
-                    found = true;
-
-                    cin.ignore();
-                    cout << "Enter Product Name: ";
-                    getline(cin, customer.name);
-
-                    cout << "Enter Product Name: ";
-                    getline(cin, customer.phone);
-
-                    cout << "Enter Product Name: ";
-                    getline(cin, customer.type);
-
-                    customer.type = typeStr;
-
-                    // Write updated row
-                    temp << searchID << ", "
-                         << customer.name << ", "
-                         << customer.phone << ", "
-                         << customer.type << endl;
-                }
-
-                else {
-                    // Copy original row
-                    temp << line << endl;
-                }
-            }
-
-            file.close();
-            temp.close();
-            
-            if (found){
-                remove("Customers/customers.csv");
-                rename("Customers/temp.csv", "Customers/customers.csv");
-                cout << "Product updated successfully.\n";
-            }
-            else{
-                remove("Customers/temp.csv");
-                cout << "Product ID not found.\n";
-            }
+        if (found)
+        {
+            remove("Customers/customers.csv");
+            rename("Customers/temp.csv", "Customers/customers.csv");
+            cout << "Customer updated successfully.\n";
         }
-        else{
-            cout << "Invalid Input..";
+        else
+        {
+            remove("Customers/temp.csv");
+            cout << "Customer ID not found.\n";
         }
-     }while(whatUpdate != 0);
+
+    } while (whatUpdate != 0);
+
+    cout << "You're exited...\n";
     return 0;
 }
+
 
 int deleteCustomers(Customers &customer, fstream &file, fstream &temp){
     int searchID;
@@ -456,7 +270,7 @@ int deleteCustomers(Customers &customer, fstream &file, fstream &temp){
 
     if (found) {
         remove("Customers/customers.csv");
-        rename("Customers/temp.csv", "customers.csv");
+        rename("Customers/temp.csv", "Customers/customers.csv");
         cout << "Customers Deleted successfully.\n";
     }
     else
@@ -522,7 +336,7 @@ int searchCustomers(Customers &customer, fstream &file){
         cout << "Type: " << customer.type << endl;
     }
     else {
-        cout << "There is no customer with ID: " << customer.ID;
+        cout << "There is no customer with ID: " << customer.ID << endl;
     }
     return 0;
 }

@@ -6,7 +6,7 @@
 #include <sstream>
 
 using namespace std;
-bool isAuthentic = false;
+
 // Structure holds user data
 struct User{
     int UID;
@@ -14,95 +14,85 @@ struct User{
     string password;
 };
 
-int authentication(){
-    fstream file; // File object for reading/writing files
-    User user;    // User-defined datatype to store user input and info
+int signUp(User &user, fstream &file){
+    // Opens counter.txt to read the last used UID
+    file.open("./Authentication/counter.txt", ios::in);
+    if(!file.is_open()) {
+        cout << "Error in opening counter.txt\n";
+        return 0;
+    }
+    string count;
+    getline(file, count);   // Read the UID as string
+    user.UID = stoi(count); // Convert UID string to int
+    file.close();           // Close file
 
-    int choice;
-    cout << "Press 1 to Sign up 2 to Login: "; // Take user input: 1 = Sign up, 2 = Login
-    cin >> choice;
+    cout << "\n--------==== Sign Up ====--------" << endl;
 
-    // --------==== Sign Up ====--------
-    if (choice == 1){
+    cout << "Enter Username: "; // Gets username as input
+    cin >> user.username;
 
-        // Opens counter.txt to read the last used UID
-        file.open("./Authentication/counter.txt", ios::in);
-        if(!file.is_open()) {
-            cout << "Error in opening counter.txt\n";
-            return 0;
-        }
-        string count;
-        getline(file, count);   // Read the UID as string
-        user.UID = stoi(count); // Convert UID string to int
-        file.close();           // Close file
+    cout << "Enter password: "; // Gets Password as input
+    cin >> user.password;
 
-        cout << "\n--------==== Sign Up ====--------" << endl;
-
-        cout << "Enter Username: "; // Gets username as input
-        cin >> user.username;
-
-        cout << "Enter password: "; // Gets Password as input
-        cin >> user.password;
-
-        // Step 2: Check for duplicate username
-        file.open("./Authentication/data.csv", ios::in);
-        if (!file.is_open()) {
-            cout << "Error in opening data.csv\n";
-            return 0;
-        }
-
-        string line;
-        bool duplicate = false;
-
-        getline(file, line); // Skip header
-        while (getline(file, line)) {
-            stringstream ss(line);
-            string uidStr, usernameStr, passwordStr;
-
-            getline(ss, uidStr, ',');
-            getline(ss, usernameStr, ',');
-            
-            // Remove leading/trailing spaces
-            usernameStr.erase(0, usernameStr.find_first_not_of(" "));
-            usernameStr.erase(usernameStr.find_last_not_of(" ") + 1);
-
-            if (usernameStr == user.username) {
-                duplicate = true;
-                break;
-            }
-        }
-        file.close();
-
-        if (duplicate) {
-            cout << "Username already exists. Choose another username.\n";
-        } else {
-            // Step 3: Append new user
-            user.UID++; // Increment UID
-            file.open("./Authentication/data.csv", ios::out | ios::app);
-            if (!file.is_open()) {
-                cout << "Error in opening data.csv for writing\n";
-                return 0;
-            }
-            file << user.UID << ", " << user.username << ", " << user.password << "\n";
-            file.close();
-
-            // Step 4: Update counter.txt
-            file.open("./Authentication/counter.txt", ios::out);
-            if (!file.is_open()) {
-                cout << "Error opening counter.txt for writing\n";
-                return 0;
-            }
-            file << user.UID;
-            file.close();
-
-            cout << "Sign up successful! Your UID is " << user.UID << endl;
-            isAuthentic = true;
-        }
+    // Step 2: Check for duplicate username
+    file.open("./Authentication/data.csv", ios::in);
+    if (!file.is_open()) {
+        cout << "Error in opening data.csv\n";
+        return 0;
     }
 
-    // --------==== Sign In ====--------
-    else if (choice == 2){
-        cout << "\n--------==== Sign In ====--------" << endl;
+    string line;
+    bool duplicate = false;
+
+    getline(file, line); // Skip header
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string uidStr, usernameStr, passwordStr;
+
+        getline(ss, uidStr, ',');
+        getline(ss, usernameStr, ',');
+        
+        // Remove leading/trailing spaces
+        usernameStr.erase(0, usernameStr.find_first_not_of(" "));
+        usernameStr.erase(usernameStr.find_last_not_of(" ") + 1);
+
+        if (usernameStr == user.username) {
+            duplicate = true;
+            break;
+        }
+    }
+    file.close();
+
+    if (duplicate) {
+        cout << "Username already exists. Choose another username.\n";
+        return 0;
+    } else {
+        // Step 3: Append new user
+        user.UID++; // Increment UID
+        file.open("./Authentication/data.csv", ios::out | ios::app);
+        if (!file.is_open()) {
+            cout << "Error in opening data.csv for writing\n";
+            return 0;
+        }
+        file << user.UID << ", " << user.username << ", " << user.password << "\n";
+        file.close();
+
+        // Step 4: Update counter.txt
+        file.open("./Authentication/counter.txt", ios::out);
+        if (!file.is_open()) {
+            cout << "Error opening counter.txt for writing\n";
+            return 0;
+        }
+        file << user.UID;
+        file.close();
+
+        cout << "Sign up successful! Your UID is " << user.UID << endl;
+        return -1;
+    }
+}
+
+int signIn(User &user, fstream &file){
+    cout << "\n--------==== Sign In ====--------" << endl;
         cout << "Enter your username: ";
         cin >> user.username;
 
@@ -144,10 +134,43 @@ int authentication(){
         file.close();
         if (exist) {
             cout << "User Exist and its UID is: " << user.UID << endl;
-            isAuthentic = true;
+            return -1;
         } else {
             cout << "Incorrect Username or Password";
+            return 0;
+        }
+}
+
+bool authentication(){
+    fstream file; // File object for reading/writing files
+    User user;    // User-defined datatype to store user input and info
+
+    int choice;
+    cout << "\n\nSign up............Press 1\n"
+         << "Login..............Press 2: ";
+    cin >> choice;
+
+    // --------==== Sign Up ====--------
+    if (choice == 1){
+        int sign_up = signUp(user, file);
+
+        if (sign_up == -1){
+            return true;
         }
     }
-    return 0;
+
+    // --------==== Sign In ====--------
+    else if (choice == 2){
+        int sign_in = signIn(user, file);
+
+        if (sign_in == -1){
+            return true;
+        }
+    }
+
+    else {
+        cout << "Invalid Input";
+    }
+
+    return false;
 }

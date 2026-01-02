@@ -7,16 +7,15 @@
 
 using namespace std;
 int main(){
-    // authentication();
-    // if (isAuthentic) {
-    if (true){
+    bool isAuthorized = authentication();
+    if (isAuthorized) {
         while(true){
             int choice;
             cout << "\n--------==== Main MENU ====--------\n" 
-                 << "Products....................Press 1: \n" 
-                 << "Customers...................Press 2: \n"
-                 << "Manage Transactions.........Press 3: \n"
-                 << "Billing.....................Press 4: \n"
+                 << "Products Module.............Press 1: \n" 
+                 << "Customers Module............Press 2: \n"
+                 << "Transactions Module.........Press 3: \n"
+                 << "Billing Module..............Press 4: \n"
                  << "Terminate the Program.......Press 0: ";
             cin >> choice;
             if (choice == 0){
@@ -39,9 +38,6 @@ int main(){
                 cout << "Invalid Input..";
             }
         }
-    } 
-    else {
-        cout << "Invalid Input";
     }
     return 0;
 }
