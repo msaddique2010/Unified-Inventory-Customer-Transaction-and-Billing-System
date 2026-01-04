@@ -10,7 +10,7 @@ The project supports **user authentication**, **dynamic billing**, and **CSV-bas
 | Roll Number      | Name                  |
 |-----------------|----------------------|
 | 25021519-187    | Muhammad Saddique     |
-| 25021519-138    | Farooq Farhaaj        |
+| 25021519-138    | Farooq Farhaj        |
 | 25021519-136    | Maaz Arif             |
 | 25021519-215    | Aliyan Nadeem         |
 
