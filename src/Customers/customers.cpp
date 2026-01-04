@@ -11,7 +11,9 @@ int addCustomers(Customers &customer, fstream &file){
     // Opens counter.txt to read the last used UID
     file.open("Customers/counter.txt", ios::in);
         if (!file.is_open()) {
-            cout << "Error in opening counter.txt\n";
+            cout << "\n-----------------------------\n"
+                 << "Error in opening counter.txt\n"
+                 << "-----------------------------\n";
             return 0;
         }
         string count;
@@ -41,7 +43,9 @@ int addCustomers(Customers &customer, fstream &file){
     customer.ID++; // Increment UID
     file.open("Customers/customers.csv", ios::out | ios::app);
     if (!file.is_open()) {
-        cout << "Error in opening customers.csv for writing\n";
+        cout << "\n-------------------------------------------\n"
+             << "Error in opening customers.csv for writing\n"
+             << "-------------------------------------------\n";
         return 0;
     }
     file << customer.ID << ", " << customer.name << ", " << customer.phone << ", " << customer.type << "\n";
@@ -50,7 +54,10 @@ int addCustomers(Customers &customer, fstream &file){
     // Updating counter.txt w.r.t the last id stores in .csv
     file.open("Customers/counter.txt", ios::out);
     if (!file.is_open()) {
-        cout << "Error opening counter.txt for writing\n";
+
+        cout << "\n--------------------------------------\n"
+             << "Error opening counter.txt for writing\n"
+             << "--------------------------------------\n";
         return 0;
     }
     file << customer.ID;
@@ -68,7 +75,9 @@ int updateCustomers(Customers &customer, fstream &file, fstream &temp)
     file.open("Customers/customers.csv", ios::in);
     if (!file.is_open())
     {
-        cout << "Error in opening customers.csv\n";
+        cout << "\n-----------------------------\n"
+             << "Error in opening customers.csv\n"
+             << "-----------------------------\n";
         return 0;
     }
 
@@ -95,13 +104,15 @@ int updateCustomers(Customers &customer, fstream &file, fstream &temp)
 
     if (!exists)
     {
-        cout << "There is no customer with given ID.\n";
+        cout << "\n-----------------------------------\n"
+             << "There is no customer with given ID.\n"
+             << "-----------------------------------\n";
         return 0;
     }
 
-    cout << "---------------------------\n";
+    cout << "-------------------------------------\n";
     cout << "You Selected: " << customer.name << endl;
-    cout << "---------------------------\n";
+    cout << "-------------------------------------\n";
 
     int whatUpdate;
 
@@ -124,7 +135,9 @@ int updateCustomers(Customers &customer, fstream &file, fstream &temp)
 
         if (!file.is_open() || !temp.is_open())
         {
-            cout << "Error opening file\n";
+            cout << "\n-----------------------------\n"
+             << "Error opening file\n"
+             << "-----------------------------\n";
             return 0;
         }
 
@@ -210,12 +223,16 @@ int updateCustomers(Customers &customer, fstream &file, fstream &temp)
         {
             remove("Customers/customers.csv");
             rename("Customers/temp.csv", "Customers/customers.csv");
-            cout << "Customer updated successfully.\n";
+            cout << "\n-----------------------------\n"
+                 << "Customer updated Successfully!  \n"
+                 << "-----------------------------\n";
         }
         else
         {
             remove("Customers/temp.csv");
-            cout << "Customer ID not found.\n";
+            cout << "\n-----------------------------\n"
+             << "Customer ID not found.\n"
+             << "-----------------------------\n";
         }
 
     } while (whatUpdate != 0);
@@ -234,7 +251,9 @@ int deleteCustomers(Customers &customer, fstream &file, fstream &temp){
     temp.open("Customers/temp.csv", ios::out);
 
     if (!file.is_open() || !temp.is_open()) {
-        cout << "Error opening file\n";
+        cout << "\n------------------\n"
+             << "Error opening file\n"
+             << "------------------\n";
         return 0;
     }
 
@@ -271,12 +290,16 @@ int deleteCustomers(Customers &customer, fstream &file, fstream &temp){
     if (found) {
         remove("Customers/customers.csv");
         rename("Customers/temp.csv", "Customers/customers.csv");
-        cout << "Customers Deleted successfully.\n";
+        cout << "\n-----------------------------\n"
+             << "Customer deleted Successfully!  \n"
+             << "-----------------------------\n";
     }
     else
     {
         remove("Customers/temp.csv");
-        cout << "Customers ID not found.\n";
+        cout << "\n-----------------------------\n"
+             << "    Customer ID not found!   \n"
+             << "-----------------------------\n";
     }
     return 0;
 }
@@ -288,7 +311,9 @@ int searchCustomers(Customers &customer, fstream &file){
     file.open("Customers/customers.csv", ios::in);
         if (!file.is_open())
         {
-            cout << "Error in opening customers.csv\n";
+            cout << "\n-----------------------------\n"
+                 << "Error in opening customers.csv\n"
+                 << "-----------------------------\n";
             return 0;
         }
 
@@ -336,7 +361,9 @@ int searchCustomers(Customers &customer, fstream &file){
         cout << "Type: " << customer.type << endl;
     }
     else {
-        cout << "There is no customer with ID: " << customer.ID << endl;
+        cout << "\n-----------------------------\n"
+             << "There is no customer with ID: " << customer.ID << "\n"
+             << "-----------------------------\n";
     }
     return 0;
 }
@@ -348,7 +375,9 @@ int allCustomers(Customers &customer, fstream &file){
     file.open("Customers/customers.csv", ios::in);
         if (!file.is_open())
         {
-            cout << "Error in opening customers.csv\n";
+        cout << "\n-------------------------------\n"
+                 << "Error in opening customers.csv\n"
+                 << "-------------------------------\n";
             return 0;
         }
 
@@ -409,7 +438,9 @@ int customers(){
         cin >> choice;
 
         if (choice == 0) {
-            cout << "You'r Logged out.\n";
+            cout << "\n-----------------------------\n"
+                 << "You'r Logged out.\n"
+                 << "-----------------------------\n";
             break;
         }
         else if (choice == 1) {
@@ -428,7 +459,9 @@ int customers(){
             updateCustomers(customer, file, temp);
         }
         else {
-            cout << "Invalid Input";
+            cout << "\n-------------\n"
+                 << "Invalid Input\n"
+                 << "-------------\n";
         }
     } while (choice != 0);
     return 0;

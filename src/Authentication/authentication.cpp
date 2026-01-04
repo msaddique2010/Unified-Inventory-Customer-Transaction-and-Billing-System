@@ -86,7 +86,9 @@ int signUp(User &user, fstream &file){
         file << user.UID;
         file.close();
 
-        cout << "Sign up successful! Your UID is " << user.UID << endl;
+        cout << "\n--------------------------------------------\n"
+             << "Sign up successful! Your UID is " << user.UID << "\n"
+             << "--------------------------------------------\n";
         return -1;
     }
 }
@@ -102,7 +104,9 @@ int signIn(User &user, fstream &file){
         // Checking if file contain user name entered by user
         file.open("./Authentication/data.csv", ios::in);
         if (!file.is_open()) {
-            cout << "Error in opening data.csv\n";
+            cout << "\n-----------------------------\n"
+                 << "Error in opening data.csv\n"
+                 << "-----------------------------\n";
             return 0;
         }
 
@@ -133,10 +137,15 @@ int signIn(User &user, fstream &file){
         }
         file.close();
         if (exist) {
+            cout << "\n-------------------------------------\n";
             cout << "User Exist and its UID is: " << user.UID << endl;
+            cout << "-------------------------------------\n";
             return -1;
         } else {
-            cout << "Incorrect Username or Password";
+            cout << " \n--------------------------------\n";
+            cout << "| Incorrect Username or Password |\n";
+            cout << " --------------------------------\n";
+
             return 0;
         }
 }
@@ -146,7 +155,8 @@ bool authentication(){
     User user;    // User-defined datatype to store user input and info
 
     int choice;
-    cout << "\n\nSign up............Press 1\n"
+    cout << "\n--------==== Login Menu ====--------\n"
+         << "Sign up............Press 1\n"
          << "Login..............Press 2: ";
     cin >> choice;
 
@@ -169,7 +179,9 @@ bool authentication(){
     }
 
     else {
-        cout << "Invalid Input";
+        cout << "\n-----------------------------\n"
+             << "Invalid Input\n"
+             << "-----------------------------\n";
     }
 
     return false;

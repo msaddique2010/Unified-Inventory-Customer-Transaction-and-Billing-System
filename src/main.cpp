@@ -20,7 +20,10 @@ int main(){
                  << "Terminate the Program.......Press 0: ";
             cin >> choice;
             if (choice == 0){
-                cout << "You're going to exit..";
+                cout << "\n-----------------------\n";
+                cout << "You're going to exit..\n";
+                cout << "-----------------------\n";
+
                 break;
             }
             else if (choice == 1) {

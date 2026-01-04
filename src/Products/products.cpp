@@ -12,7 +12,9 @@ int addProducts(Products &product, fstream &file){
     // Opens counter.txt to read the last used UID
     file.open("Products/counter.txt", ios::in);
         if (!file.is_open()) {
-            cout << "Error in opening counter.txt\n";
+            cout << "\n-----------------------------\n"
+                 << "Error in opening counter.txt\n"
+                 << "-----------------------------\n";
             return 0;
         }
         string count;
@@ -38,16 +40,24 @@ int addProducts(Products &product, fstream &file){
         product.ID++; // Increment UID
         file.open("Products/products.csv", ios::out | ios::app);
         if (!file.is_open()) {
-            cout << "Error in opening products.csv for writing\n";
+            cout << "\n------------------------------------------\n"
+                 << "Error in opening products.csv for writing\n"
+                 << "------------------------------------------\n";
             return 0;
         }
         file << product.ID << ", " << product.name << ", " << product.description << ", " << product.price << ", " << product.quantity << "\n";
+
+        cout << "\n-----------------------------\n"
+             << "  Product added Successfully!  \n"
+             << "-----------------------------\n";
         file.close();
 
         // Step 4: Update counter.txt
         file.open("Products/counter.txt", ios::out);
         if (!file.is_open()) {
-            cout << "Error opening counter.txt for writing\n";
+            cout << "\n---------------------------------------\n"
+                 << "Error opening counter.txt for writing.\n"
+                 << "---------------------------------------\n";
             return 0;
         }
         file << product.ID;
@@ -65,7 +75,9 @@ int updateProducts(Products &product, fstream &file, fstream &temp)
     file.open("Products/products.csv", ios::in);
     if (!file.is_open())
     {
-        cout << "Error in opening products.csv\n";
+    cout << "\n-----------------------------\n"
+         << "Error in opening products.csv\n"
+         << "-----------------------------\n";
         return 0;
     }
 
@@ -92,7 +104,9 @@ int updateProducts(Products &product, fstream &file, fstream &temp)
 
     if (!exists)
     {
-        cout << "There is no product with given ID.\n";
+        cout << "\n-----------------------------\n"
+             << "There is no product with given ID.\n"
+             << "-----------------------------\n";
         return 0;
     }
 
@@ -122,7 +136,9 @@ int updateProducts(Products &product, fstream &file, fstream &temp)
 
         if (!file.is_open() || !temp.is_open())
         {
-            cout << "Error opening file\n";
+            cout << "\n-----------------------------\n"
+                 << "Error opening file\n"
+                 << "-----------------------------\n";
             return 0;
         }
 
@@ -208,12 +224,16 @@ int updateProducts(Products &product, fstream &file, fstream &temp)
         {
             remove("Products/products.csv");
             rename("Products/temp.csv", "Products/products.csv");
-            cout << "Product updated successfully.\n";
+            cout << "\n-----------------------------\n"
+                 << "Product updated successfully.\n"
+                 << "-----------------------------\n";
         }
         else
         {
             remove("Products/temp.csv");
-            cout << "Product ID not found.\n";
+            cout << "\n-----------------------------\n"
+                 << "Product ID not found.\n"
+                 << "-----------------------------\n";
         }
 
     } while (whatUpdate != 0);
@@ -231,7 +251,9 @@ int deleteProducts(Products &product, fstream &file, fstream &temp){
     temp.open("Products/temp.csv", ios::out);
 
     if (!file.is_open() || !temp.is_open()) {
-        cout << "Error opening file\n";
+        cout << "\n-------------------\n"
+             << "Error opening file\n"
+             << "-------------------\n";
         return 0;
     }
 
@@ -268,12 +290,16 @@ int deleteProducts(Products &product, fstream &file, fstream &temp){
     if (found) {
         remove("Products/products.csv");
         rename("Products/temp.csv", "Products/products.csv");
-        cout << "Product Deleted successfully.\n";
+        cout << "\n-----------------------------\n"
+             << "Product deleted Successfully!  \n"
+             << "-----------------------------\n";
     }
     else
     {
         remove("Products/temp.csv");
-        cout << "Product ID not found.\n";
+        cout << "\n-----------------------------\n"
+             << "Product ID not found.\n"
+             << "-----------------------------\n";
     }
     return 0;
 }
@@ -285,7 +311,9 @@ int searchProducts(Products &product, fstream &file){
     file.open("Products/products.csv", ios::in);
     if (!file.is_open())
     {
-        cout << "Error in opening products.csv\n";
+        cout << "\n------------------------------\n"
+                 << "Error in opening products.csv\n"
+                 << "------------------------------\n";
         return 0;
     }
 
@@ -352,7 +380,9 @@ int allProducts(Products &product, fstream &file){
     file.open("Products/products.csv", ios::in);
     if (!file.is_open())
     {
-        cout << "Error in opening products.csv\n\n";
+        cout << "\n-----------------------------\n"
+             << "Error in opening products.csv\n"
+             << "-----------------------------\n\n";
         return 0;
     }
 
@@ -403,7 +433,9 @@ int allProducts(Products &product, fstream &file){
         exist = true;
     }
     if (!exist) {
-        cout << "No products available in Products.csv\n";
+        cout << "\n-----------------------------\n"
+             << "No products available in Products.csv\n"
+             << "-----------------------------\n";
     }
     file.close();
     return 0;
@@ -426,7 +458,9 @@ int products(){
         cin >> choice;
 
         if (choice == 0) {
-            cout << "You'r Exited from Product Menu.\n";
+            cout << "\n-------------------------------\n"
+                 << "You'r Exited from Product Menu.\n"
+                 << "-------------------------------\n";
             break;
         }
         else if (choice == 1) {
@@ -446,7 +480,10 @@ int products(){
         }
         else
         {
-            cout << "Invalid Input";
+            cout << "";
+            cout << "\n--------------\n"
+                 << "Invalid Input\n"
+                 << "--------------\n";
         }
     } while (choice != 0);
     return 0;
