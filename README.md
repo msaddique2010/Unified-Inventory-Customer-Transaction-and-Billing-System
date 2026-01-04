@@ -1,5 +1,5 @@
-# Mini ERP System
-
+# Title: Unified Inventory Customer Transaction and Billing  System
+## Project Description:
 A simple ERP system developed in **C++** to manage products, customers, transactions, and billing for a small business.  
 The project supports **user authentication**, **dynamic billing**, and **CSV-based persistent storage**. It is designed as a command-line application.
 
@@ -18,14 +18,7 @@ The project supports **user authentication**, **dynamic billing**, and **CSV-bas
 
 ---
 
-## Technologies Used
-- C++ (Standard Library: fstream, string, vector, ctime)
-- CSV file handling for data storage
-- VS Code / GCC Compiler
-
----
-
-## Project Features
+## Project Features List
 - **User Authentication:** Sign up and sign in system with CSV-based user data.
 - **Customer Management:** Add, view, and manage customer records.
 - **Product Management:** Add, view, and manage product records.
@@ -33,6 +26,14 @@ The project supports **user authentication**, **dynamic billing**, and **CSV-bas
 - **Billing System:** Generate bills automatically, with support for discounts based on customer type.
 - **Persistent Storage:** All data is stored in CSV files for simplicity and easy inspection.
 ---
+
+## Technologies Used
+- C++ (Standard Library: fstream, string, vector, ctime)
+- CSV file handling for data storage
+- VS Code / GCC Compiler
+
+---
+## How to run program:
 
 1. Clone the repository:
    ```bash
@@ -42,7 +43,7 @@ The project supports **user authentication**, **dynamic billing**, and **CSV-bas
    ```bash
    cd Unified-Inventory-Customer-Transaction-and-Billing-System/src
 
-3. Compile the project using g++::
+3. Compile the project using g++:
    ```bash
    g++ main.cpp -o main.exe
    
