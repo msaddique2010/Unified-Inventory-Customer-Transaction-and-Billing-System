@@ -56,7 +56,7 @@ The project supports **user authentication**, **dynamic billing**, and **CSV-bas
 | Roll Number      | Name                  | Contribution                           |
 |-----------------|----------------------|-------------------------------------------|
 | 25021519-187    | Muhammad Saddique     | Core logic, Programmed System        |
-| 25021519-138    | Farooq Farhaaj        | Attested the System |
+| 25021519-138    | Farooq Farhaj        | Attested the System and Reported the Bugs |
 | 25021519-136    | Maaz Arif             | Designed Interface      |
 | 25021519-215    | Aliyan Nadeem         | Comments, documentation      |
 
