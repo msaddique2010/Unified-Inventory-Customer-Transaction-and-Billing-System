@@ -1,13 +1,11 @@
-// Next step is to avoid duplication in Username (username must be unique)
-
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <sstream>
+#include <sstream> // To separate each column in .csv file
 
 using namespace std;
 
-// Structure holds user data
+// Structure holds user data like UID, usernme, password.
 struct User{
     int UID;
     string username;
@@ -34,7 +32,7 @@ int signUp(User &user, fstream &file){
     cout << "Enter password: "; // Gets Password as input
     cin >> user.password;
 
-    // Step 2: Check for duplicate username
+    // Check for duplicate username if exist
     file.open("./Authentication/data.csv", ios::in);
     if (!file.is_open()) {
         cout << "Error in opening data.csv\n";
@@ -44,15 +42,16 @@ int signUp(User &user, fstream &file){
     string line;
     bool duplicate = false;
 
-    getline(file, line); // Skip header
+    getline(file, line); // This line is used to skip header
     while (getline(file, line)) {
         stringstream ss(line);
         string uidStr, usernameStr, passwordStr;
 
+        // Separated words if they find ","
         getline(ss, uidStr, ',');
         getline(ss, usernameStr, ',');
         
-        // Remove leading/trailing spaces
+        // Remove spaces and store it in struct
         usernameStr.erase(0, usernameStr.find_first_not_of(" "));
         usernameStr.erase(usernameStr.find_last_not_of(" ") + 1);
 
@@ -67,7 +66,8 @@ int signUp(User &user, fstream &file){
         cout << "Username already exists. Choose another username.\n";
         return 0;
     } else {
-        // Step 3: Append new user
+        // Add new user at the bottom of csv file without any overrighting
+
         user.UID++; // Increment UID
         file.open("./Authentication/data.csv", ios::out | ios::app);
         if (!file.is_open()) {
@@ -77,7 +77,7 @@ int signUp(User &user, fstream &file){
         file << user.UID << ", " << user.username << ", " << user.password << "\n";
         file.close();
 
-        // Step 4: Update counter.txt
+        // Update counter.txt according to the last id stored in csv
         file.open("./Authentication/counter.txt", ios::out);
         if (!file.is_open()) {
             cout << "Error opening counter.txt for writing\n";
@@ -99,7 +99,7 @@ int signIn(User &user, fstream &file){
         cout << "Enter your password: ";
         cin >> user.password;
 
-        // Checking if file contain user name
+        // Checking if file contain user name entered by user
         file.open("./Authentication/data.csv", ios::in);
         if (!file.is_open()) {
             cout << "Error in opening data.csv\n";

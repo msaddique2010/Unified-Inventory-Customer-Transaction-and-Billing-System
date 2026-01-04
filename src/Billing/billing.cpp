@@ -2,8 +2,9 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <vector>
-#include <ctime>
+#include <vector>   // To include a dynamic array and its functions
+#include <ctime>    // To add current time in .csv file
+
 #include "billing.h"
 
 using namespace std;
@@ -31,7 +32,7 @@ int billing()
 
         if (choice == 1)
         {
-            // Step 1: Read last Bill ID from counter.txt
+            // Read last Bill ID from counter.txt
             file.open("Billing/counter.txt", ios::in);
             if (!file.is_open())
             {
@@ -46,7 +47,7 @@ int billing()
             cout << "\nEnter Transaction ID to generate bill: ";
             cin >> bill.Transaction_ID;
 
-            // Step 2: Sum all products for this transaction
+            // Sum all products for this transaction
             fstream transFile("Transactions/transactions.csv", ios::in);
             if (!transFile.is_open())
             {
