@@ -40,7 +40,7 @@ The project supports **user authentication**, **dynamic billing**, and **CSV-bas
 
 2. Navigate to the src directory:
    ```bash
-   cd Project-Name/src
+   cd Unified-Inventory-Customer-Transaction-and-Billing-System/src
 
 3. Compile the project using g++::
    ```bash
