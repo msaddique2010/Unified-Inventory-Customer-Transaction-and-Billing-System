@@ -21,13 +21,13 @@ int addCustomers(Customers &customer, fstream &file){
 
     cout << "--------==== Add Customer ====--------" << endl;
     cin.ignore();
-    cout << "Enter Customer name: "; // Gets username as input
+    cout << "Enter Customer name: ";    // Gets name of the customer as input
     getline(cin, customer.name);
 
-    cout << "Enter Customer's Phone Number: "; // Gets Password as input
+    cout << "Enter Customer's Phone Number: ";  // Gets Phone number of the customer
     getline(cin, customer.phone);
 
-    cout << "Enter Customer Type(general(g), regular(r)): "; // Gets Password as input
+    cout << "Enter Customer Type(general(g), regular(r)): ";    // Gets Type of the customer
     getline(cin, customer.type);
 
     if (customer.type == "g" || customer.type == "G" || customer.type == "general") {
@@ -37,7 +37,7 @@ int addCustomers(Customers &customer, fstream &file){
         customer.type = "Regular";
     }
 
-    // Step 3: Append new user
+    // Added new user at the last of the .csv file
     customer.ID++; // Increment UID
     file.open("Customers/customers.csv", ios::out | ios::app);
     if (!file.is_open()) {
@@ -47,7 +47,7 @@ int addCustomers(Customers &customer, fstream &file){
     file << customer.ID << ", " << customer.name << ", " << customer.phone << ", " << customer.type << "\n";
     file.close();
 
-    // Step 4: Update counter.txt
+    // Updating counter.txt w.r.t the last id stores in .csv
     file.open("Customers/counter.txt", ios::out);
     if (!file.is_open()) {
         cout << "Error opening counter.txt for writing\n";
@@ -129,7 +129,7 @@ int updateCustomers(Customers &customer, fstream &file, fstream &temp)
         }
 
         bool found = false;
-        getline(file, line);     // header
+        getline(file, line);     // read line
         temp << line << endl;    // write header
 
         while (getline(file, line))

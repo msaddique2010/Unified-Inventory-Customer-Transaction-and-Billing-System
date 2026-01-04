@@ -2,13 +2,14 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <ctime>
+#include <ctime>    // To include current date and time
 
 #include "../Products/products.h"
 #include "../Customers/customers.h"
 
 using namespace std;
 
+// Sturcture for storing transaction details
 struct Sales
 {
     int Transaction_ID;
@@ -58,7 +59,7 @@ int transactions()
         else if (choice == 3)
         {
             string line;
-            // Read last Transaction_ID
+            // Read last user Transaction_ID from counter.txt
             file.open("Transactions/counter.txt", ios::in);
             if (!file.is_open())
             {
@@ -66,10 +67,10 @@ int transactions()
                 return 0;
             }
             getline(file, line);
-            sale.Transaction_ID = stoi(line); // base ID
+            sale.Transaction_ID = stoi(line); // Convert ID from string to int
             file.close();
 
-            sale.Transaction_ID++; // increment once for this multi-product transaction
+            sale.Transaction_ID++; // increments Transaction_ID so that id must be unique
 
             cout << "\n--------==== Create Transaction ====--------" << endl;
             cin.ignore();
@@ -85,7 +86,7 @@ int transactions()
             }
             bool customerExist = false;
             getline(file, line); // skip header
-            while (getline(file, line))
+            while (getline(file, line))     // Run until reaches the end of file
             {
                 stringstream ss(line);
                 string idStr, nameStr, phoneStr, typeStr;
@@ -112,14 +113,14 @@ int transactions()
                 continue;
             }
 
-            // Multi-product loop
+            // Loop to add multiple producst
             char more = 'y';
             while (more == 'y' || more == 'Y')
             {
                 cout << "Enter Product ID: ";
                 cin >> sale.Product_ID;
 
-                // Validate product existence
+                // Validates if product exists or not
                 file.open("Products/Products.csv", ios::in);
                 if (!file.is_open())
                 {
