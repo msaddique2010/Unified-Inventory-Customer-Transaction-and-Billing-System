@@ -53,10 +53,22 @@ The project supports **user authentication**, **dynamic billing**, and **CSV-bas
 ---
 ## Contribution Summary
 
-| Roll Number      | Name                  | Responsibilities                           |
+| Roll Number      | Name                  | Contribution                           |
 |-----------------|----------------------|-------------------------------------------|
-| 25021519-187    | Muhammad Saddique     | Core logic, Programmed the System        |
+| 25021519-187    | Muhammad Saddique     | Core logic, Programmed System        |
 | 25021519-138    | Farooq Farhaaj        | Attested the System |
-| 25021519-136    | Maaz Arif             | Interface and user experience design      |
+| 25021519-136    | Maaz Arif             | Designed Interface      |
 | 25021519-215    | Aliyan Nadeem         | Comments, documentation      |
 
+---
+## Notes
+- All data is stored in CSV files
+- Unique IDs are managed using counter.txt files
+- Program is terminal-based
+  
+---
+## Limitations
+- No graphical user interface (GUI)
+- No database integration
+- Single-user system
+---
