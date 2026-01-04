@@ -7,8 +7,6 @@ The project supports **user authentication**, **dynamic billing**, and **CSV-bas
 
 ## Team Members
 
-## Team Members
-
 | Roll Number      | Name                  |
 |-----------------|----------------------|
 | 25021519-187    | Muhammad Saddique     |
